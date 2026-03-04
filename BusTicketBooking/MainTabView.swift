@@ -28,10 +28,10 @@ struct MainTabView: View {
                     Text("Tickets")
                 }
 
-            MoreView()
+            ProfileView()
                 .tabItem {
-                    Image(systemName: "ellipsis.circle")
-                    Text("More")
+                    Image(systemName: "person.circle.fill")
+                    Text("Profile")
                 }
         }
         .accentColor(Theme.primaryMaroon)

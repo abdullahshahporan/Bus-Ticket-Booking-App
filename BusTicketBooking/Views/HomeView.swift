@@ -30,19 +30,19 @@ struct HomeView: View {
 
                         TextField("From", text: $fromCity)
                             .padding()
-                            .background(Color.white)
+                            .background(Theme.cardBackground)
                             .cornerRadius(12)
 
                         TextField("To", text: $toCity)
                             .padding()
-                            .background(Color.white)
+                            .background(Theme.cardBackground)
                             .cornerRadius(12)
 
                         DatePicker("Select Date",
                                    selection: $selectedDate,
                                    displayedComponents: .date)
                             .padding()
-                            .background(Color.white)
+                            .background(Theme.cardBackground)
                             .cornerRadius(12)
 
                         Button(action: {}) {
@@ -57,7 +57,7 @@ struct HomeView: View {
 
                     }
                     .padding()
-                    .background(Color.white)
+                    .background(Theme.cardBackground)
                     .cornerRadius(20)
                     .shadow(color: .gray.opacity(0.2), radius: 10)
 

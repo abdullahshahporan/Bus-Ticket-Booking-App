@@ -8,35 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var authViewModel = AuthViewModel()
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     var body: some View {
-        TabView {
-            
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
-
-            OffersView()
-                .tabItem {
-                    Label("Offers", systemImage: "percent")
-                }
-
-            TicketsView()
-                .tabItem {
-                    Label("Tickets", systemImage: "ticket.fill")
-                }
-
-            MoreView()
-                .tabItem {
-                    Label("More", systemImage: "ellipsis.circle")
-                }
+        Group {
+            if authViewModel.userSession != nil {
+                MainTabView()
+            } else {
+                SignInView()
+            }
         }
-        .accentColor(Theme.primaryMaroon)
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+        .environmentObject(authViewModel)
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }

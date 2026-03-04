@@ -31,7 +31,7 @@ struct RouteCardView: View {
             .cornerRadius(10)
         }
         .padding()
-        .background(Color.white)
+        .background(Theme.cardBackground)
         .cornerRadius(15)
         .shadow(color: .gray.opacity(0.1), radius: 5)
         .padding(.vertical, 5)
