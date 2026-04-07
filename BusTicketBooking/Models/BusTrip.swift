@@ -14,9 +14,10 @@ struct BusTrip: Identifiable {
     let destination: String
     let departureTime: String
     let arrivalTime: String
-    let availableSeats: Int
+    var availableSeats: Int
     let ticketPrice: Int
     let busType: String
+    var seatMatrix: String // 40-character binary string: 0 = available, 1 = booked
 
     // MARK: - Firestore Initializer
     init?(documentID: String, data: [String: Any]) {
@@ -40,6 +41,26 @@ struct BusTrip: Identifiable {
         self.availableSeats = availableSeats
         self.ticketPrice = ticketPrice
         self.busType = busType
+        let rawMatrix = data["seatMatrix"]
+        let seatMatrixString: String
+        if let matrixString = rawMatrix as? String {
+            seatMatrixString = matrixString
+        } else if let matrixArray = rawMatrix as? [Int] {
+            seatMatrixString = matrixArray.map { $0 == 1 ? "1" : "0" }.joined()
+        } else if let matrixArray = rawMatrix as? [NSNumber] {
+            seatMatrixString = matrixArray.map { $0.intValue == 1 ? "1" : "0" }.joined()
+        } else if let matrixArray = rawMatrix as? [Any] {
+            seatMatrixString = matrixArray.compactMap { ($0 as? NSNumber)?.intValue }.map {
+                $0 == 1 ? "1" : "0"
+            }.joined()
+        } else {
+            seatMatrixString = String(repeating: "0", count: 40)
+        }
+
+        self.seatMatrix = seatMatrixString
+        if seatMatrixString.count == 40 {
+            self.availableSeats = SeatHelper.countAvailableSeats(in: seatMatrixString)
+        }
     }
 
     // MARK: - Computed Properties

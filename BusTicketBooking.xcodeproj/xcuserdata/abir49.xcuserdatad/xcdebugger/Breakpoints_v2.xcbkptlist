@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "AE6E3B26-140B-4C6B-9310-84396D5D96BA"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8DBC3B36-F66F-4A77-B42B-65839742A81A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BusTicketBooking/ViewModels/SeedService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
+            landmarkName = "countAvailableSeats(in:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "8DBC3B36-F66F-4A77-B42B-65839742A81A - e0e53211e412b62b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BusTicketBooking.SeedService.countAvailableSeats(in: Swift.String) -&gt; Swift.Int"
+                  moduleName = "BusTicketBooking"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abir49/Desktop/a/Bus-Ticket-Booking-App/BusTicketBooking/ViewModels/SeedService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97"
+                  offsetFromSymbolStart = "59">
+               </Location>
+               <Location
+                  uuid = "8DBC3B36-F66F-4A77-B42B-65839742A81A - 2600baec253e5be"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Character) -&gt; Swift.Bool in BusTicketBooking.SeedService.countAvailableSeats(in: Swift.String) -&gt; Swift.Int"
+                  moduleName = "BusTicketBooking"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abir49/Desktop/a/Bus-Ticket-Booking-App/BusTicketBooking/ViewModels/SeedService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97"
+                  offsetFromSymbolStart = "42">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
