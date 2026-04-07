@@ -31,7 +31,10 @@ class RouteViewModel: ObservableObject {
                     self.isLoading = false
 
                     if let error = error {
-                        self.errorMessage = "Unable to load routes: \(error.localizedDescription)"
+                        self.errorMessage = self.firestoreErrorMessage(
+                            error,
+                            fallbackPrefix: "Unable to load routes"
+                        )
                         return
                     }
 
@@ -40,5 +43,16 @@ class RouteViewModel: ObservableObject {
                     } ?? []
                 }
             }
+    }
+
+    private func firestoreErrorMessage(_ error: Error, fallbackPrefix: String) -> String {
+        let nsError = error as NSError
+        let permissionCode = FirestoreErrorCode.permissionDenied.rawValue
+
+        if nsError.domain == FirestoreErrorDomain, nsError.code == permissionCode {
+            return "\(fallbackPrefix): Missing or insufficient permissions. Please update Firestore rules for popularRoutes read access."
+        }
+
+        return "\(fallbackPrefix): \(error.localizedDescription)"
     }
 }

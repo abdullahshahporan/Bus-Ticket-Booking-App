@@ -90,7 +90,7 @@ struct BusListView: View {
                 ScrollView {
                     LazyVStack(spacing: 12) {
                         ForEach(viewModel.trips) { trip in
-                            NavigationLink(destination: BusTripDetailView(trip: trip)) {
+                            NavigationLink(destination: BusTripDetailView(trip: trip, travelDate: travelDate)) {
                                 BusCardView(trip: trip)
                             }
                             .buttonStyle(.plain)

@@ -236,6 +236,25 @@ class AuthViewModel: ObservableObject {
                 self.currentUser = profile
             }
         } catch {
+            let nsError = error as NSError
+            let permissionCode = FirestoreErrorCode.permissionDenied.rawValue
+
+            if nsError.domain == FirestoreErrorDomain, nsError.code == permissionCode {
+                // Keep profile usable even when Firestore read is blocked by rules.
+                let email = userSession?.email ?? ""
+                let fallbackName = userSession?.displayName
+                    ?? email.components(separatedBy: "@").first
+                    ?? "User"
+
+                self.currentUser = UserProfile(
+                    id: uid,
+                    fullName: fallbackName,
+                    email: email
+                )
+                self.errorMessage = "Unable to load full profile from Firestore: Missing or insufficient permissions."
+                return
+            }
+
             self.errorMessage = error.localizedDescription
         }
     }
