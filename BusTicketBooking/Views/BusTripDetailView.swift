@@ -10,6 +10,7 @@ import SwiftUI
 struct BusTripDetailView: View {
 
     let trip: BusTrip
+    let travelDate: Date
 
     var body: some View {
         ScrollView {
@@ -114,7 +115,7 @@ struct BusTripDetailView: View {
                 .cornerRadius(16)
 
                 // Select Seat button
-                NavigationLink(destination: SeatSelectionView(trip: trip)) {
+                NavigationLink(destination: SeatSelectionView(trip: trip, travelDate: travelDate)) {
                     Text("Select Seat")
                         .bold()
                         .frame(maxWidth: .infinity)

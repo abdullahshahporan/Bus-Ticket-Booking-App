@@ -40,6 +40,13 @@
 		2295F7012F57DFF0000425DF /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F7002F57DFF0000425DF /* FirebaseFirestoreSwift */; };
 		2295F7032F57DFF0000425DF /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F7022F57DFF0000425DF /* FirebaseStorage */; };
 		2295F7052F57E036000425DF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2295F7042F57E036000425DF /* GoogleService-Info.plist */; };
+		555B6D8F2F7ADFAB00583C58 /* BookingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555B6D8E2F7ADFAB00583C58 /* BookingViewModel.swift */; };
+		555B6D942F7AE00B00583C58 /* SeatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555B6D922F7AE00B00583C58 /* SeatHelper.swift */; };
+		555B6D952F7AE00B00583C58 /* Booking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555B6D932F7AE00B00583C58 /* Booking.swift */; };
+		5594B7792F7FE9F7007178BC /* BookingConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5594B7782F7FE9F6007178BC /* BookingConfirmationView.swift */; };
+		5594B77C2F7FEA9A007178BC /* SeatLayoutPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5594B77A2F7FEA93007178BC /* SeatLayoutPDFView.swift */; };
+		5594B77D2F7FEA9A007178BC /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5594B77B2F7FEA9A007178BC /* ShareSheet.swift */; };
+		5594B7812F7FF95C007178BC /* TicketPDFGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5594B7802F7FF95C007178BC /* TicketPDFGenerator.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E501 /* BusTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E500 /* BusTrip.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E503 /* BusCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E502 /* BusCardView.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E505 /* BusListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E504 /* BusListView.swift */; };
@@ -98,6 +105,13 @@
 		223C6D242F50510000BCC29D /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		223C6D2F2F50516000BCC29D /* NotificationPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPreferencesView.swift; sourceTree = "<group>"; };
 		2295F7042F57E036000425DF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		555B6D8E2F7ADFAB00583C58 /* BookingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookingViewModel.swift; sourceTree = "<group>"; };
+		555B6D922F7AE00B00583C58 /* SeatHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeatHelper.swift; sourceTree = "<group>"; };
+		555B6D932F7AE00B00583C58 /* Booking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Booking.swift; sourceTree = "<group>"; };
+		5594B7782F7FE9F6007178BC /* BookingConfirmationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookingConfirmationView.swift; sourceTree = "<group>"; };
+		5594B77A2F7FEA93007178BC /* SeatLayoutPDFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeatLayoutPDFView.swift; sourceTree = "<group>"; };
+		5594B77B2F7FEA9A007178BC /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
+		5594B7802F7FF95C007178BC /* TicketPDFGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TicketPDFGenerator.swift; path = Utilities/TicketPDFGenerator.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E500 /* BusTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusTrip.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E502 /* BusCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusCardView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E504 /* BusListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusListView.swift; sourceTree = "<group>"; };
@@ -165,6 +179,7 @@
 		223C6CD72F50405900BCC29D /* BusTicketBooking */ = {
 			isa = PBXGroup;
 			children = (
+				5594B7802F7FF95C007178BC /* TicketPDFGenerator.swift */,
 				2295F7042F57E036000425DF /* GoogleService-Info.plist */,
 				223C6D262F50511000BCC29D /* ViewModels */,
 				223C6D152F5042E100BCC29D /* Models */,
@@ -208,6 +223,7 @@
 		223C6D052F5040F000BCC29D /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5594B7782F7FE9F6007178BC /* BookingConfirmationView.swift */,
 				223C6D062F50410A00BCC29D /* HomeView.swift */,
 				223C6D082F50411B00BCC29D /* OffersView.swift */,
 				223C6D0A2F50413700BCC29D /* TicketsView.swift */,
@@ -229,6 +245,8 @@
 		223C6D0E2F50414D00BCC29D /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				5594B77A2F7FEA93007178BC /* SeatLayoutPDFView.swift */,
+				5594B77B2F7FEA9A007178BC /* ShareSheet.swift */,
 				223C6D0F2F5042AF00BCC29D /* BannerView.swift */,
 				223C6D112F5042C700BCC29D /* RouteCardView.swift */,
 				223C6D132F5042D400BCC29D /* Theme.swift */,
@@ -240,6 +258,8 @@
 		223C6D152F5042E100BCC29D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				555B6D932F7AE00B00583C58 /* Booking.swift */,
+				555B6D922F7AE00B00583C58 /* SeatHelper.swift */,
 				223C6D162F5042F000BCC29D /* Route.swift */,
 				223C6D1A2F5050B000BCC29D /* UserModel.swift */,
 				A1B2C3D4E5F6A1B2C3D4E500 /* BusTrip.swift */,
@@ -250,6 +270,7 @@
 		223C6D262F50511000BCC29D /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				555B6D8E2F7ADFAB00583C58 /* BookingViewModel.swift */,
 				223C6D182F5050A000BCC29D /* AuthViewModel.swift */,
 				B2C3D4E5F6A7B2C3D4E5F601 /* BusTripViewModel.swift */,
 				B2C3D4E5F6A7B2C3D4E5F603 /* RouteViewModel.swift */,
@@ -405,7 +426,9 @@
 				223C6D0D2F50414400BCC29D /* MoreView.swift in Sources */,
 				223C6D0B2F50413700BCC29D /* TicketsView.swift in Sources */,
 				223C6D172F5042F000BCC29D /* Route.swift in Sources */,
+				555B6D952F7AE00B00583C58 /* Booking.swift in Sources */,
 				223C6D092F50411B00BCC29D /* OffersView.swift in Sources */,
+				5594B7792F7FE9F7007178BC /* BookingConfirmationView.swift in Sources */,
 				223C6CDB2F50405900BCC29D /* ContentView.swift in Sources */,
 				223C6D102F5042AF00BCC29D /* BannerView.swift in Sources */,
 				223C6D072F50410A00BCC29D /* HomeView.swift in Sources */,
@@ -416,8 +439,13 @@
 				223C6D192F5050A000BCC29D /* AuthViewModel.swift in Sources */,
 				223C6D1B2F5050B000BCC29D /* UserModel.swift in Sources */,
 				223C6D1D2F5050C000BCC29D /* SignUpView.swift in Sources */,
+				5594B77C2F7FEA9A007178BC /* SeatLayoutPDFView.swift in Sources */,
 				223C6D1F2F5050D000BCC29D /* SignInView.swift in Sources */,
+				555B6D8F2F7ADFAB00583C58 /* BookingViewModel.swift in Sources */,
+				555B6D942F7AE00B00583C58 /* SeatHelper.swift in Sources */,
 				223C6D212F5050E000BCC29D /* ForgotPasswordView.swift in Sources */,
+				5594B77D2F7FEA9A007178BC /* ShareSheet.swift in Sources */,
+				5594B7812F7FF95C007178BC /* TicketPDFGenerator.swift in Sources */,
 				223C6D232F5050F000BCC29D /* ChangePasswordView.swift in Sources */,
 				223C6D252F50510000BCC29D /* ProfileView.swift in Sources */,
 				223C6D2E2F50516000BCC29D /* NotificationPreferencesView.swift in Sources */,
@@ -581,7 +609,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BusTicketBooking/BusTicketBooking.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BusTicketBooking/Preview Content\"";
@@ -618,7 +646,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BusTicketBooking/BusTicketBooking.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BusTicketBooking/Preview Content\"";
