@@ -114,6 +114,52 @@ struct BusTripDetailView: View {
                 .background(Theme.cardBackground)
                 .cornerRadius(16)
 
+                // Pickup & Dropping Points
+                if !trip.pickupPoints.isEmpty || !trip.droppingPoints.isEmpty {
+                    VStack(alignment: .leading, spacing: 16) {
+                        if !trip.pickupPoints.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Label("Pickup Points", systemImage: "mappin.circle.fill")
+                                    .font(.headline)
+                                    .foregroundColor(.green)
+                                ForEach(trip.pickupPoints, id: \.self) { point in
+                                    HStack(spacing: 8) {
+                                        Circle()
+                                            .fill(Color.green.opacity(0.4))
+                                            .frame(width: 6, height: 6)
+                                        Text(point)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .padding(.leading, 8)
+                                }
+                            }
+                        }
+
+                        if !trip.droppingPoints.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Label("Dropping Points", systemImage: "mappin.and.ellipse")
+                                    .font(.headline)
+                                    .foregroundColor(.red)
+                                ForEach(trip.droppingPoints, id: \.self) { point in
+                                    HStack(spacing: 8) {
+                                        Circle()
+                                            .fill(Color.red.opacity(0.4))
+                                            .frame(width: 6, height: 6)
+                                        Text(point)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .padding(.leading, 8)
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                    .background(Theme.cardBackground)
+                    .cornerRadius(16)
+                }
+
                 // Select Seat button
                 NavigationLink(destination: SeatSelectionView(trip: trip, travelDate: travelDate)) {
                     Text("Select Seat")
