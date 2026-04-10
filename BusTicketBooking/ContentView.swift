@@ -10,16 +10,36 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var authViewModel = AuthViewModel()
     @AppStorage("isDarkMode") private var isDarkMode = false
+    @State private var showSplash = true
     
     var body: some View {
-        Group {
-            if authViewModel.userSession != nil {
-                MainTabView()
+        ZStack {
+            if showSplash {
+                SplashScreenView()
+                    .transition(.opacity)
             } else {
-                SignInView()
+                Group {
+                    if authViewModel.userSession != nil {
+                        if authViewModel.isAdmin {
+                            AdminDashboardView()
+                        } else {
+                            MainTabView()
+                        }
+                    } else {
+                        SignInView()
+                    }
+                }
+                .transition(.opacity)
             }
         }
         .environmentObject(authViewModel)
         .preferredColorScheme(isDarkMode ? .dark : .light)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    showSplash = false
+                }
+            }
+        }
     }
 }
