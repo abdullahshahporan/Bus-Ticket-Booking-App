@@ -17,6 +17,7 @@ class AuthViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var successMessage: String?
+    @Published var isAdmin = false
     
     private let db = Firestore.firestore()
     private var authStateHandle: AuthStateDidChangeListenerHandle?
@@ -30,14 +31,17 @@ class AuthViewModel: ObservableObject {
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor [weak self] in
                 guard let self = self else { return }
-                if let user = user, user.isEmailVerified {
+                let isAdminEmail = user?.email?.lowercased() == "admin@gmail.com"
+                if let user = user, (user.isEmailVerified || isAdminEmail) {
                     self.userSession = user
+                    self.isAdmin = isAdminEmail
                     if self.currentUser == nil {
                         await self.fetchUserProfile()
                     }
                 } else {
                     self.userSession = nil
                     self.currentUser = nil
+                    self.isAdmin = false
                 }
             }
         }
@@ -75,7 +79,8 @@ class AuthViewModel: ObservableObject {
             let userProfile = UserProfile(
                 id: result.user.uid,
                 fullName: fullName,
-                email: email
+                email: email,
+                role: email.lowercased() == "admin@gmail.com" ? "admin" : "user"
             )
             
             try await saveUserProfile(userProfile)
@@ -133,11 +138,13 @@ class AuthViewModel: ObservableObject {
         errorMessage = nil
         successMessage = nil
         
+        let isAdminEmail = email.lowercased() == "admin@gmail.com"
+        
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             
-            // Check if email is verified
-            if !result.user.isEmailVerified {
+            // Skip email verification for admin
+            if !isAdminEmail && !result.user.isEmailVerified {
                 try Auth.auth().signOut()
                 isLoading = false
                 errorMessage = "Please verify your email before signing in. Check your inbox for the verification link."
@@ -145,6 +152,7 @@ class AuthViewModel: ObservableObject {
             }
             
             self.userSession = result.user
+            self.isAdmin = isAdminEmail
             isLoading = false
             await fetchUserProfile()
         } catch {
@@ -159,6 +167,7 @@ class AuthViewModel: ObservableObject {
             try Auth.auth().signOut()
             self.userSession = nil
             self.currentUser = nil
+            self.isAdmin = false
             self.errorMessage = nil
             self.successMessage = nil
         } catch {
@@ -223,10 +232,19 @@ class AuthViewModel: ObservableObject {
                     phone: data["phone"] as? String ?? "",
                     contactNo: data["contactNo"] as? String ?? "",
                     address: data["address"] as? String ?? "",
+                    role: data["role"] as? String ?? "user",
                     notificationPreferences: notifPrefs,
                     createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
                     updatedAt: (data["updatedAt"] as? Timestamp)?.dateValue() ?? Date()
                 )
+                
+                // Check admin role from Firestore
+                if let role = data["role"] as? String, role == "admin" {
+                    self.isAdmin = true
+                }
+                if self.userSession?.email?.lowercased() == "admin@gmail.com" {
+                    self.isAdmin = true
+                }
             } else {
                 // Document doesn't exist in Firestore (edge case: Auth succeeded but Firestore save failed during signup)
                 // Create a basic profile so the user isn't stuck
@@ -267,6 +285,7 @@ class AuthViewModel: ObservableObject {
             "phone": profile.phone,
             "contactNo": profile.contactNo,
             "address": profile.address,
+            "role": profile.role,
             "notificationPreferences": profile.notificationPreferences.toDictionary(),
             "createdAt": Timestamp(date: profile.createdAt),
             "updatedAt": Timestamp(date: profile.updatedAt)
