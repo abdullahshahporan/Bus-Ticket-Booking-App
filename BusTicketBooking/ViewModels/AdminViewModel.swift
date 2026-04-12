@@ -31,6 +31,36 @@ class AdminViewModel: ObservableObject {
         let totalPrice: Int
     }
 
+    private func decodeInt(_ value: Any?) -> Int? {
+        switch value {
+        case let intValue as Int:
+            return intValue
+        case let number as NSNumber:
+            return number.intValue
+        case let doubleValue as Double:
+            return Int(doubleValue)
+        case let stringValue as String:
+            return Int(stringValue)
+        default:
+            return nil
+        }
+    }
+
+    private func decodeTimeInterval(_ value: Any?) -> TimeInterval? {
+        switch value {
+        case let interval as TimeInterval:
+            return interval
+        case let timestamp as Timestamp:
+            return timestamp.dateValue().timeIntervalSince1970
+        case let number as NSNumber:
+            return number.doubleValue
+        case let stringValue as String:
+            return TimeInterval(stringValue)
+        default:
+            return nil
+        }
+    }
+
     // MARK: - Add Bus
 
     func addBus(
@@ -163,10 +193,10 @@ class AdminViewModel: ObservableObject {
                 let source = tripData["source"] as? String ?? ""
                 let destination = tripData["destination"] as? String ?? ""
 
-                let bookingTimestamp = data["bookingDate"] as? TimeInterval ?? Date().timeIntervalSince1970
-                let travelTimestamp = data["travelDate"] as? TimeInterval ?? bookingTimestamp
+                let bookingTimestamp = decodeTimeInterval(data["bookingDate"]) ?? Date().timeIntervalSince1970
+                let travelTimestamp = decodeTimeInterval(data["travelDate"]) ?? bookingTimestamp
                 let seatLabels = data["seatLabels"] as? [String] ?? []
-                let totalPrice = data["totalPrice"] as? Int ?? 0
+                let totalPrice = decodeInt(data["totalPrice"]) ?? 0
 
                 records.append(
                     SoldTicketRecord(
@@ -188,6 +218,118 @@ class AdminViewModel: ObservableObject {
             isLoading = false
         } catch {
             errorMessage = "Failed to load sold tickets: \(error.localizedDescription)"
+            isLoading = false
+        }
+    }
+
+    // MARK: - Firestore Cleanup / Reseed
+
+    func cleanupAndReseedIfNeeded() async {
+        isLoading = true
+        errorMessage = nil
+        successMessage = nil
+
+        var updatedBusTrips = 0
+        var updatedBookings = 0
+        var seededBuses = 0
+
+        do {
+            let busTripsSnapshot = try await db.collection("busTrips").getDocuments()
+
+            for document in busTripsSnapshot.documents {
+                let data = document.data()
+                var patch: [String: Any] = [:]
+
+                let rawMatrix = (data["seatMatrix"] as? String) ?? String(repeating: "0", count: 40)
+                let cleanedMatrix = rawMatrix.filter { $0 == "0" || $0 == "1" }
+                let normalizedMatrix = String((cleanedMatrix + String(repeating: "0", count: 40)).prefix(40))
+                let normalizedAvailableSeats = SeatHelper.countAvailableSeats(in: normalizedMatrix)
+
+                if data["seatMatrix"] as? String != normalizedMatrix {
+                    patch["seatMatrix"] = normalizedMatrix
+                }
+
+                if decodeInt(data["availableSeats"]) != normalizedAvailableSeats {
+                    patch["availableSeats"] = normalizedAvailableSeats
+                }
+
+                let discount = min(max(decodeInt(data["discount"]) ?? 0, 0), 100)
+                if decodeInt(data["discount"]) != discount {
+                    patch["discount"] = discount
+                }
+
+                if !patch.isEmpty {
+                    try await db.collection("busTrips").document(document.documentID).setData(patch, merge: true)
+                    updatedBusTrips += 1
+                }
+            }
+
+            if busTripsSnapshot.documents.isEmpty {
+                let sampleBuses: [[String: Any]] = [
+                    [
+                        "busName": "Green Line Express",
+                        "source": "Dhaka",
+                        "destination": "Chattogram",
+                        "departureTime": "09:00 AM",
+                        "arrivalTime": "03:00 PM",
+                        "ticketPrice": 1200,
+                        "discount": 10,
+                        "busType": "AC",
+                        "availableSeats": 40,
+                        "seatMatrix": String(repeating: "0", count: 40),
+                        "pickupPoints": ["Gabtoli", "Sayedabad"],
+                        "droppingPoints": ["AK Khan", "GEC"]
+                    ],
+                    [
+                        "busName": "Shyamoli Paribahan",
+                        "source": "Dhaka",
+                        "destination": "Khulna",
+                        "departureTime": "08:30 AM",
+                        "arrivalTime": "02:30 PM",
+                        "ticketPrice": 900,
+                        "discount": 0,
+                        "busType": "Non-AC",
+                        "availableSeats": 40,
+                        "seatMatrix": String(repeating: "0", count: 40),
+                        "pickupPoints": ["Gabtoli"],
+                        "droppingPoints": ["Sonadanga"]
+                    ]
+                ]
+
+                for bus in sampleBuses {
+                    try await db.collection("busTrips").addDocument(data: bus)
+                    seededBuses += 1
+                }
+            }
+
+            let bookingsSnapshot = try await db.collection("bookings").getDocuments()
+
+            for document in bookingsSnapshot.documents {
+                let data = document.data()
+                var patch: [String: Any] = [:]
+
+                if data["status"] as? String == nil {
+                    patch["status"] = "confirmed"
+                }
+
+                if decodeTimeInterval(data["travelDate"]) == nil {
+                    if let bookingTime = decodeTimeInterval(data["bookingDate"]) {
+                        patch["travelDate"] = bookingTime
+                    }
+                }
+
+                if !patch.isEmpty {
+                    try await db.collection("bookings").document(document.documentID).setData(patch, merge: true)
+                    updatedBookings += 1
+                }
+            }
+
+            await fetchAllBuses()
+            let seededMessage = seededBuses > 0 ? ", seeded \(seededBuses) sample buses" : ""
+            successMessage = "Cleanup complete: updated \(updatedBusTrips) bus trips, \(updatedBookings) bookings\(seededMessage)."
+            isLoading = false
+        } catch {
+            errorMessage = "Cleanup failed: \(error.localizedDescription)"
             isLoading = false
         }
     }

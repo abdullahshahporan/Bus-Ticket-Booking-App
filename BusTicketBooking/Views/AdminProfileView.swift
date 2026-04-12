@@ -9,6 +9,9 @@ struct AdminProfileView: View {
     @State private var address = ""
     @State private var isEditing = false
     @State private var showSignOutAlert = false
+    @State private var showMaintenanceAlert = false
+
+    @StateObject private var adminVM = AdminViewModel()
 
     var body: some View {
         NavigationStack {
@@ -94,6 +97,20 @@ struct AdminProfileView: View {
                             .multilineTextAlignment(.center)
                     }
 
+                    if let error = adminVM.errorMessage {
+                        Text(error)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                    }
+
+                    if let success = adminVM.successMessage {
+                        Text(success)
+                            .foregroundColor(.green)
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                    }
+
                     Button {
                         if isEditing {
                             Task {
@@ -151,6 +168,26 @@ struct AdminProfileView: View {
                     }
 
                     Button {
+                        showMaintenanceAlert = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "wrench.and.screwdriver.fill")
+                            Text("Run Firestore Cleanup")
+                                .bold()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Theme.cardBackground)
+                        .foregroundColor(Theme.primaryColor)
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Theme.primaryColor.opacity(0.4), lineWidth: 1)
+                        )
+                    }
+                    .disabled(adminVM.isLoading)
+
+                    Button {
                         showSignOutAlert = true
                     } label: {
                         HStack {
@@ -178,6 +215,16 @@ struct AdminProfileView: View {
                 }
             } message: {
                 Text("Are you sure you want to sign out?")
+            }
+            .alert("Run Firestore Cleanup", isPresented: $showMaintenanceAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Run", role: .destructive) {
+                    Task {
+                        await adminVM.cleanupAndReseedIfNeeded()
+                    }
+                }
+            } message: {
+                Text("This will normalize bus and booking data, and seed sample buses only if busTrips is empty.")
             }
             .onAppear {
                 Task { await authViewModel.fetchUserProfile() }

@@ -24,14 +24,29 @@ struct BusTrip: Identifiable {
 
     // MARK: - Firestore Initializer
     init?(documentID: String, data: [String: Any]) {
+        func decodeInt(_ value: Any?) -> Int? {
+            switch value {
+            case let intValue as Int:
+                return intValue
+            case let number as NSNumber:
+                return number.intValue
+            case let doubleValue as Double:
+                return Int(doubleValue)
+            case let stringValue as String:
+                return Int(stringValue)
+            default:
+                return nil
+            }
+        }
+
         guard
             let busName = data["busName"] as? String,
             let source = data["source"] as? String,
             let destination = data["destination"] as? String,
             let departureTime = data["departureTime"] as? String,
             let arrivalTime = data["arrivalTime"] as? String,
-            let availableSeats = data["availableSeats"] as? Int,
-            let ticketPrice = data["ticketPrice"] as? Int,
+            let availableSeats = decodeInt(data["availableSeats"]),
+            let ticketPrice = decodeInt(data["ticketPrice"]),
             let busType = data["busType"] as? String
         else { return nil }
 
@@ -43,7 +58,7 @@ struct BusTrip: Identifiable {
         self.arrivalTime = arrivalTime
         self.availableSeats = availableSeats
         self.ticketPrice = ticketPrice
-        self.discount = min(max(data["discount"] as? Int ?? 0, 0), 100)
+        self.discount = min(max(decodeInt(data["discount"]) ?? 0, 0), 100)
         self.busType = busType
         self.pickupPoints = data["pickupPoints"] as? [String] ?? []
         self.droppingPoints = data["droppingPoints"] as? [String] ?? []
@@ -63,9 +78,12 @@ struct BusTrip: Identifiable {
             seatMatrixString = String(repeating: "0", count: 40)
         }
 
-        self.seatMatrix = seatMatrixString
-        if seatMatrixString.count == 40 {
-            self.availableSeats = SeatHelper.countAvailableSeats(in: seatMatrixString)
+        let cleanedMatrix = seatMatrixString.filter { $0 == "0" || $0 == "1" }
+        let normalizedMatrix = String((cleanedMatrix + String(repeating: "0", count: 40)).prefix(40))
+
+        self.seatMatrix = normalizedMatrix
+        if normalizedMatrix.count == 40 {
+            self.availableSeats = SeatHelper.countAvailableSeats(in: normalizedMatrix)
         }
     }
 

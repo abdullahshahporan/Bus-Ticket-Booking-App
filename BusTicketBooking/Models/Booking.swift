@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 struct Booking: Identifiable {
     let id: String
@@ -26,13 +27,56 @@ struct Booking: Identifiable {
     
     // MARK: - Firestore Initializer
     init?(documentID: String, data: [String: Any], busTrip: BusTrip) {
+        func decodeInt(_ value: Any?) -> Int? {
+            switch value {
+            case let intValue as Int:
+                return intValue
+            case let number as NSNumber:
+                return number.intValue
+            case let doubleValue as Double:
+                return Int(doubleValue)
+            case let stringValue as String:
+                return Int(stringValue)
+            default:
+                return nil
+            }
+        }
+
+        func decodeTimeInterval(_ value: Any?) -> TimeInterval? {
+            switch value {
+            case let interval as TimeInterval:
+                return interval
+            case let timestamp as Timestamp:
+                return timestamp.dateValue().timeIntervalSince1970
+            case let number as NSNumber:
+                return number.doubleValue
+            case let stringValue as String:
+                return TimeInterval(stringValue)
+            default:
+                return nil
+            }
+        }
+
+        let decodedSeatIndices: [Int]? = {
+            if let indices = data["seatIndices"] as? [Int] {
+                return indices
+            }
+            if let raw = data["seatIndices"] as? [NSNumber] {
+                return raw.map { $0.intValue }
+            }
+            if let raw = data["seatIndices"] as? [Any] {
+                return raw.compactMap { decodeInt($0) }
+            }
+            return nil
+        }()
+
         guard
             let userId = data["userId"] as? String,
-            let seatIndices = data["seatIndices"] as? [Int],
+            let seatIndices = decodedSeatIndices,
             let seatLabels = data["seatLabels"] as? [String],
-            let totalPrice = data["totalPrice"] as? Int,
-            let timestamp = data["bookingDate"] as? TimeInterval,
-            let statusStr = data["status"] as? String,
+            let totalPrice = decodeInt(data["totalPrice"]),
+            let timestamp = decodeTimeInterval(data["bookingDate"]),
+            let statusStr = data["status"] as? String ?? "confirmed",
             let status = BookingStatus(rawValue: statusStr)
         else { return nil }
         
@@ -43,7 +87,7 @@ struct Booking: Identifiable {
         self.seatLabels = seatLabels
         self.totalPrice = totalPrice
         let bookingDate = Date(timeIntervalSince1970: timestamp)
-        let travelTimestamp = data["travelDate"] as? TimeInterval
+        let travelTimestamp = decodeTimeInterval(data["travelDate"])
         let calendar = Calendar.current
 
         self.bookingDate = bookingDate
