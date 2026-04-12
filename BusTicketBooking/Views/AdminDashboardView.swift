@@ -189,7 +189,13 @@ struct AdminBusRow: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 2) {
-                Text(trip.priceFormatted)
+                if trip.hasDiscount {
+                    Text("\(trip.discount)% OFF")
+                        .font(.caption2)
+                        .bold()
+                        .foregroundColor(.red)
+                }
+                Text(trip.hasDiscount ? trip.discountedPriceFormatted : trip.priceFormatted)
                     .font(.subheadline)
                     .bold()
                     .foregroundColor(Theme.primaryColor)
