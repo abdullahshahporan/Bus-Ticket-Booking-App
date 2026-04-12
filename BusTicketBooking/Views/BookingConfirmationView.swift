@@ -114,6 +114,12 @@ struct BookingConfirmationView: View {
         VStack(spacing: 12) {
             detailRow(label: "Route",     value: "\(confirmation.trip.source) -> \(confirmation.trip.destination)")
             detailRow(label: "Bus",       value: confirmation.trip.busName)
+            if confirmation.trip.hasDiscount {
+                detailRow(
+                    label: "Fare",
+                    value: "\(confirmation.trip.discount)% OFF (\(confirmation.trip.priceFormatted) -> \(confirmation.trip.discountedPriceFormatted))"
+                )
+            }
             detailRow(label: "Passenger", value: passengerName)
             detailRow(label: "Phone",     value: passengerPhone)
             detailRow(label: "Departure", value: departureDisplay)
