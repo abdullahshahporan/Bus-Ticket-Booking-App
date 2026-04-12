@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import BusTicketBooking
 
 final class BusTicketBookingTests: XCTestCase {
 
@@ -30,6 +31,43 @@ final class BusTicketBookingTests: XCTestCase {
         measure {
             // Put the code you want to measure the time of here.
         }
+    }
+
+    func testBusTripDiscountDefaultsToZero() throws {
+        let data: [String: Any] = [
+            "busName": "Test Coach",
+            "source": "Dhaka",
+            "destination": "Chattogram",
+            "departureTime": "09:00 AM",
+            "arrivalTime": "03:00 PM",
+            "availableSeats": 40,
+            "ticketPrice": 1000,
+            "busType": "AC"
+        ]
+
+        let trip = try XCTUnwrap(BusTrip(documentID: "trip-1", data: data))
+        XCTAssertEqual(trip.discount, 0)
+        XCTAssertEqual(trip.discountedPrice, 1000)
+        XCTAssertFalse(trip.hasDiscount)
+    }
+
+    func testBusTripDiscountCalculatesReducedFare() throws {
+        let data: [String: Any] = [
+            "busName": "Test Coach",
+            "source": "Dhaka",
+            "destination": "Khulna",
+            "departureTime": "09:00 AM",
+            "arrivalTime": "03:00 PM",
+            "availableSeats": 40,
+            "ticketPrice": 1000,
+            "discount": 20,
+            "busType": "AC"
+        ]
+
+        let trip = try XCTUnwrap(BusTrip(documentID: "trip-2", data: data))
+        XCTAssertEqual(trip.discount, 20)
+        XCTAssertEqual(trip.discountedPrice, 800)
+        XCTAssertTrue(trip.hasDiscount)
     }
 
 }
