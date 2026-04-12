@@ -26,6 +26,7 @@ class AdminViewModel: ObservableObject {
         departureTime: String,
         arrivalTime: String,
         ticketPrice: Int,
+        discount: Int = 0,
         busType: String,
         pickupPoints: [String],
         droppingPoints: [String]
@@ -36,6 +37,7 @@ class AdminViewModel: ObservableObject {
 
         let filteredPickup = pickupPoints.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
         let filteredDropping = droppingPoints.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        let safeDiscount = min(max(discount, 0), 100)
 
         let data: [String: Any] = [
             "busName": busName,
@@ -44,6 +46,7 @@ class AdminViewModel: ObservableObject {
             "departureTime": departureTime,
             "arrivalTime": arrivalTime,
             "ticketPrice": ticketPrice,
+            "discount": safeDiscount,
             "busType": busType,
             "availableSeats": 40,
             "seatMatrix": String(repeating: "0", count: 40),
