@@ -14,8 +14,22 @@ class AdminViewModel: ObservableObject {
     @Published var successMessage: String?
     @Published var totalBookings: Int = 0
     @Published var totalUsers: Int = 0
+    @Published var soldTickets: [SoldTicketRecord] = []
 
     private let db = Firestore.firestore()
+
+    struct SoldTicketRecord: Identifiable {
+        let id: String
+        let userName: String
+        let userEmail: String
+        let userPhone: String
+        let busName: String
+        let route: String
+        let travelDate: Date
+        let bookingDate: Date
+        let seatLabels: [String]
+        let totalPrice: Int
+    }
 
     // MARK: - Add Bus
 
@@ -108,6 +122,73 @@ class AdminViewModel: ObservableObject {
             totalUsers = users.documents.count
         } catch {
             // Stats are non-critical
+        }
+    }
+
+    // MARK: - Sold Tickets
+
+    func fetchSoldTickets() async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            let bookingsSnapshot = try await db.collection("bookings")
+                .whereField("status", isEqualTo: "confirmed")
+                .getDocuments()
+
+            var records: [SoldTicketRecord] = []
+
+            for bookingDoc in bookingsSnapshot.documents {
+                let data = bookingDoc.data()
+                guard
+                    let userId = data["userId"] as? String,
+                    let busTripId = data["busTripId"] as? String
+                else {
+                    continue
+                }
+
+                let userSnapshot = try await db.collection("users").document(userId).getDocument()
+                let tripSnapshot = try await db.collection("busTrips").document(busTripId).getDocument()
+
+                let userData = userSnapshot.data() ?? [:]
+                let tripData = tripSnapshot.data() ?? [:]
+
+                let userName = userData["fullName"] as? String ?? "Unknown User"
+                let userEmail = userData["email"] as? String ?? ""
+                let userPhone = (userData["phone"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+                    ?? userData["contactNo"] as? String
+                    ?? "Not provided"
+
+                let busName = tripData["busName"] as? String ?? "Unknown Bus"
+                let source = tripData["source"] as? String ?? ""
+                let destination = tripData["destination"] as? String ?? ""
+
+                let bookingTimestamp = data["bookingDate"] as? TimeInterval ?? Date().timeIntervalSince1970
+                let travelTimestamp = data["travelDate"] as? TimeInterval ?? bookingTimestamp
+                let seatLabels = data["seatLabels"] as? [String] ?? []
+                let totalPrice = data["totalPrice"] as? Int ?? 0
+
+                records.append(
+                    SoldTicketRecord(
+                        id: bookingDoc.documentID,
+                        userName: userName,
+                        userEmail: userEmail,
+                        userPhone: userPhone,
+                        busName: busName,
+                        route: "\(source) → \(destination)",
+                        travelDate: Date(timeIntervalSince1970: travelTimestamp),
+                        bookingDate: Date(timeIntervalSince1970: bookingTimestamp),
+                        seatLabels: seatLabels,
+                        totalPrice: totalPrice
+                    )
+                )
+            }
+
+            soldTickets = records.sorted { $0.bookingDate > $1.bookingDate }
+            isLoading = false
+        } catch {
+            errorMessage = "Failed to load sold tickets: \(error.localizedDescription)"
+            isLoading = false
         }
     }
 }
