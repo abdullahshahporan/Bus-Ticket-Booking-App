@@ -16,6 +16,7 @@ struct BusTrip: Identifiable {
     let arrivalTime: String
     var availableSeats: Int
     let ticketPrice: Int
+    let discount: Int
     let busType: String
     var seatMatrix: String // 40-character binary string: 0 = available, 1 = booked
     let pickupPoints: [String]
@@ -42,6 +43,7 @@ struct BusTrip: Identifiable {
         self.arrivalTime = arrivalTime
         self.availableSeats = availableSeats
         self.ticketPrice = ticketPrice
+        self.discount = min(max(data["discount"] as? Int ?? 0, 0), 100)
         self.busType = busType
         self.pickupPoints = data["pickupPoints"] as? [String] ?? []
         self.droppingPoints = data["droppingPoints"] as? [String] ?? []
@@ -86,5 +88,18 @@ struct BusTrip: Identifiable {
 
     var priceFormatted: String {
         "৳\(ticketPrice)"
+    }
+
+    var discountedPrice: Int {
+        guard discount > 0 else { return ticketPrice }
+        return max(ticketPrice - (ticketPrice * discount / 100), 0)
+    }
+
+    var discountedPriceFormatted: String {
+        "৳\(discountedPrice)"
+    }
+
+    var hasDiscount: Bool {
+        discount > 0
     }
 }
