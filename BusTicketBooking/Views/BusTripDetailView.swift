@@ -101,8 +101,16 @@ struct BusTripDetailView: View {
 
                     DetailRow(icon: "banknote.fill",
                               title: "Ticket Price",
-                              value: trip.priceFormatted,
+                              value: trip.hasDiscount ? trip.discountedPriceFormatted : trip.priceFormatted,
                               valueColor: Theme.primaryColor)
+
+                    if trip.hasDiscount {
+                        Divider().padding(.leading, 44)
+                        DetailRow(icon: "tag.fill",
+                                  title: "Offer",
+                                  value: "\(trip.discount)% OFF (was \(trip.priceFormatted))",
+                                  valueColor: .red)
+                    }
 
                     Divider().padding(.leading, 44)
 
