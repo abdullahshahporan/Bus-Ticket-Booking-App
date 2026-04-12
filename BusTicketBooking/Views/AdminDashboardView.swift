@@ -9,36 +9,61 @@ struct AdminDashboardView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
 
     var body: some View {
-        TabView {
-            AdminHomeView()
-                .tabItem {
-                    Image(systemName: "square.grid.2x2.fill")
-                    Text("Dashboard")
-                }
+        Group {
+            if authViewModel.isAdmin {
+                TabView {
+                    AdminHomeView()
+                        .tabItem {
+                            Image(systemName: "square.grid.2x2.fill")
+                            Text("Dashboard")
+                        }
 
-            AddBusView()
-                .tabItem {
-                    Image(systemName: "plus.circle.fill")
-                    Text("Add Bus")
-                }
+                    AddBusView()
+                        .tabItem {
+                            Image(systemName: "plus.circle.fill")
+                            Text("Add Bus")
+                        }
 
-            ManageBusesView()
-                .tabItem {
-                    Image(systemName: "bus.fill")
-                    Text("Buses")
-                }
+                    ManageBusesView()
+                        .tabItem {
+                            Image(systemName: "bus.fill")
+                            Text("Buses")
+                        }
 
-            SoldTicketsView()
-                .tabItem {
-                    Image(systemName: "ticket.fill")
-                    Text("Sold")
-                }
+                    SoldTicketsView()
+                        .tabItem {
+                            Image(systemName: "ticket.fill")
+                            Text("Sold")
+                        }
 
-            AdminProfileView()
-                .tabItem {
-                    Image(systemName: "person.crop.circle.fill")
-                    Text("Profile")
+                    AdminProfileView()
+                        .tabItem {
+                            Image(systemName: "person.crop.circle.fill")
+                            Text("Profile")
+                        }
                 }
+            } else {
+                VStack(spacing: 12) {
+                    Image(systemName: "lock.shield")
+                        .font(.system(size: 42))
+                        .foregroundColor(.orange)
+                    Text("Admin access required")
+                        .font(.headline)
+                    Text("Please sign in with an authorized admin account.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                    Button("Go to Sign In") {
+                        authViewModel.signOut()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Theme.primaryColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                }
+                .padding()
+            }
         }
         .accentColor(Theme.primaryColor)
     }
