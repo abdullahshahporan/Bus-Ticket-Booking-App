@@ -15,6 +15,10 @@ struct SeatSelectionView: View {
     @State private var bookingConfirmation: BookingConfirmation?
     @State private var showConfirmation = false
 
+    private var effectiveTicketPrice: Int {
+        trip.hasDiscount ? trip.discountedPrice : trip.ticketPrice
+    }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -83,7 +87,7 @@ struct SeatSelectionView: View {
                                         .font(.subheadline)
                                         .foregroundColor(.secondary)
                                     Spacer()
-                                    Text("৳\(selectedSeats.count * trip.ticketPrice)")
+                                    Text("৳\(selectedSeats.count * effectiveTicketPrice)")
                                         .font(.title3)
                                         .bold()
                                         .foregroundColor(Theme.primaryColor)
@@ -116,7 +120,7 @@ struct SeatSelectionView: View {
                 Button(action: goToPreview) {
                     Text(selectedSeats.isEmpty
                         ? "Select a Seat"
-                        : "Preview Ticket  •  ৳\(selectedSeats.count * trip.ticketPrice)")
+                        : "Preview Ticket  •  ৳\(selectedSeats.count * effectiveTicketPrice)")
                         .bold()
                 }
                 .frame(maxWidth: .infinity)
@@ -147,7 +151,7 @@ struct SeatSelectionView: View {
         }
 
         let selectedIndices = Array(selectedSeats).sorted()
-        let totalPrice = selectedIndices.count * trip.ticketPrice
+        let totalPrice = selectedIndices.count * effectiveTicketPrice
 
         bookingConfirmation = BookingConfirmation(
             id: UUID().uuidString,
