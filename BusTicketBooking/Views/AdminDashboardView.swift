@@ -34,10 +34,10 @@ struct AdminDashboardView: View {
                     Text("Sold")
                 }
 
-            AdminSettingsView()
+            AdminProfileView()
                 .tabItem {
-                    Image(systemName: "gearshape.fill")
-                    Text("Settings")
+                    Image(systemName: "person.crop.circle.fill")
+                    Text("Profile")
                 }
         }
         .accentColor(Theme.primaryColor)
