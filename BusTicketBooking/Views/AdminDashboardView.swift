@@ -28,6 +28,12 @@ struct AdminDashboardView: View {
                     Text("Buses")
                 }
 
+            SoldTicketsView()
+                .tabItem {
+                    Image(systemName: "ticket.fill")
+                    Text("Sold")
+                }
+
             AdminSettingsView()
                 .tabItem {
                     Image(systemName: "gearshape.fill")
