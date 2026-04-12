@@ -149,9 +149,21 @@ struct ManageBusCard: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()
-                Text(trip.priceFormatted)
-                    .font(.headline)
-                    .foregroundColor(Theme.primaryColor)
+                VStack(alignment: .trailing, spacing: 2) {
+                    if trip.hasDiscount {
+                        Text("\(trip.discount)% OFF")
+                            .font(.caption2)
+                            .bold()
+                            .foregroundColor(.red)
+                        Text(trip.priceFormatted)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .strikethrough()
+                    }
+                    Text(trip.hasDiscount ? trip.discountedPriceFormatted : trip.priceFormatted)
+                        .font(.headline)
+                        .foregroundColor(Theme.primaryColor)
+                }
             }
 
             if !trip.pickupPoints.isEmpty {
