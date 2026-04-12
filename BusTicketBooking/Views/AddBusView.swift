@@ -15,6 +15,7 @@ struct AddBusView: View {
     @State private var departureTime = Date()
     @State private var arrivalTime = Date()
     @State private var ticketPrice = ""
+    @State private var discount = "0"
     @State private var busType = "AC"
     @State private var pickupPoints: [String] = [""]
     @State private var droppingPoints: [String] = [""]
@@ -28,7 +29,8 @@ struct AddBusView: View {
         !selectedSource.isEmpty &&
         !selectedDestination.isEmpty &&
         selectedSource != selectedDestination &&
-        (Int(ticketPrice) ?? 0) > 0
+        (Int(ticketPrice) ?? 0) > 0 &&
+        (0...100).contains(Int(discount) ?? 0)
     }
 
     private var timeFormatter: DateFormatter {
@@ -78,6 +80,27 @@ struct AddBusView: View {
                                 Image(systemName: "banknote.fill")
                                     .foregroundColor(Theme.primaryColor)
                                 TextField("Enter price", text: $ticketPrice)
+                                    #if os(iOS)
+                                    .keyboardType(.numberPad)
+                                    #endif
+                            }
+                            .padding()
+                            .background(Theme.cardBackground)
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            )
+                        }
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Discount (%)")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            HStack {
+                                Image(systemName: "percent")
+                                    .foregroundColor(Theme.primaryColor)
+                                TextField("0 to 100", text: $discount)
                                     #if os(iOS)
                                     .keyboardType(.numberPad)
                                     #endif
@@ -217,6 +240,7 @@ struct AddBusView: View {
             departureTime: timeFormatter.string(from: departureTime),
             arrivalTime: timeFormatter.string(from: arrivalTime),
             ticketPrice: Int(ticketPrice) ?? 0,
+            discount: Int(discount) ?? 0,
             busType: busType,
             pickupPoints: pickupPoints,
             droppingPoints: droppingPoints
@@ -233,6 +257,7 @@ struct AddBusView: View {
         departureTime = Date()
         arrivalTime = Date()
         ticketPrice = ""
+        discount = "0"
         busType = "AC"
         pickupPoints = [""]
         droppingPoints = [""]
