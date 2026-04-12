@@ -47,17 +47,19 @@ struct UserProfile: Identifiable {
     var phone: String
     var contactNo: String
     var address: String
+    var role: String
     var notificationPreferences: NotificationPreferences
     var createdAt: Date
     var updatedAt: Date
     
-    init(id: String, fullName: String, email: String, phone: String = "", contactNo: String = "", address: String = "", notificationPreferences: NotificationPreferences = NotificationPreferences(), createdAt: Date = Date(), updatedAt: Date = Date()) {
+    init(id: String, fullName: String, email: String, phone: String = "", contactNo: String = "", address: String = "", role: String = "user", notificationPreferences: NotificationPreferences = NotificationPreferences(), createdAt: Date = Date(), updatedAt: Date = Date()) {
         self.id = id
         self.fullName = fullName
         self.email = email
         self.phone = phone
         self.contactNo = contactNo
         self.address = address
+        self.role = role
         self.notificationPreferences = notificationPreferences
         self.createdAt = createdAt
         self.updatedAt = updatedAt

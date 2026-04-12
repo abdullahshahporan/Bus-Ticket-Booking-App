@@ -12,8 +12,11 @@ struct BusListView: View {
     let fromCity: String
     let toCity: String
     let travelDate: Date
+    var isReturnTrip: Bool = false
+    var returnDate: Date = Date()
 
     @StateObject private var viewModel = BusTripViewModel()
+    @State private var navigateToReturn = false
 
     private var dateFormatted: String {
         let fmt = DateFormatter()
@@ -28,9 +31,18 @@ struct BusListView: View {
             VStack(spacing: 4) {
                 Text("\(fromCity) → \(toCity)")
                     .font(.headline)
-                Text(dateFormatted)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+                HStack(spacing: 8) {
+                    Text(dateFormatted)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    if isReturnTrip {
+                        Text("•")
+                            .foregroundColor(.gray)
+                        Label("Round Trip", systemImage: "arrow.left.arrow.right")
+                            .font(.caption)
+                            .foregroundColor(Theme.primaryColor)
+                    }
+                }
                 if !viewModel.isLoading {
                     Text("\(viewModel.trips.count) bus\(viewModel.trips.count == 1 ? "" : "es") found")
                         .font(.caption)
@@ -95,6 +107,11 @@ struct BusListView: View {
                             }
                             .buttonStyle(.plain)
                         }
+
+                        // Return Trip Banner
+                        if isReturnTrip {
+                            returnTripBanner
+                        }
                     }
                     .padding()
                 }
@@ -106,5 +123,60 @@ struct BusListView: View {
         .onAppear {
             viewModel.fetchTrips(from: fromCity, to: toCity)
         }
+        .navigationDestination(isPresented: $navigateToReturn) {
+            BusListView(
+                fromCity: toCity,
+                toCity: fromCity,
+                travelDate: returnDate,
+                isReturnTrip: false
+            )
+        }
+    }
+
+    // MARK: - Return Trip Banner
+
+    @ViewBuilder
+    private var returnTripBanner: some View {
+        VStack(spacing: 12) {
+            Divider()
+
+            HStack(spacing: 8) {
+                Image(systemName: "arrow.left.arrow.right.circle.fill")
+                    .font(.title2)
+                    .foregroundColor(Theme.secondaryColor1)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Return Journey")
+                        .font(.headline)
+                    Text("\(toCity) → \(fromCity) • \(formatDate(returnDate))")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+                Spacer()
+            }
+
+            Button {
+                navigateToReturn = true
+            } label: {
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                    Text("Search Return Buses")
+                        .bold()
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Theme.secondaryColor1)
+                .foregroundColor(.white)
+                .cornerRadius(12)
+            }
+        }
+        .padding()
+        .background(Theme.cardBackground)
+        .cornerRadius(16)
+    }
+
+    private func formatDate(_ date: Date) -> String {
+        let fmt = DateFormatter()
+        fmt.dateStyle = .medium
+        return fmt.string(from: date)
     }
 }

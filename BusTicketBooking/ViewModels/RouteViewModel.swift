@@ -16,15 +16,13 @@ class RouteViewModel: ObservableObject {
 
     private let db = Firestore.firestore()
 
-    // Fetches popular routes from the "popularRoutes" collection.
-    // Ordered by minPrice ascending; limited to 6 cards on the home screen.
+    // Fetches popular routes derived from actual busTrips collection.
+    // Groups by source-destination and finds minimum price per route.
     func fetchPopularRoutes() {
         isLoading = true
         errorMessage = nil
 
-        db.collection("popularRoutes")
-            .order(by: "minPrice")
-            .limit(to: 6)
+        db.collection("busTrips")
             .getDocuments { [weak self] snapshot, error in
                 Task { @MainActor [weak self] in
                     guard let self = self else { return }
@@ -38,9 +36,28 @@ class RouteViewModel: ObservableObject {
                         return
                     }
 
-                    self.popularRoutes = snapshot?.documents.compactMap { doc in
-                        Route(documentID: doc.documentID, data: doc.data())
+                    let trips = snapshot?.documents.compactMap { doc in
+                        BusTrip(documentID: doc.documentID, data: doc.data())
                     } ?? []
+
+                    // Group by source-destination and find min price
+                    var routeMap: [String: Int] = [:]
+                    for trip in trips {
+                        let key = "\(trip.source)|\(trip.destination)"
+                        if let existing = routeMap[key] {
+                            routeMap[key] = min(existing, trip.ticketPrice)
+                        } else {
+                            routeMap[key] = trip.ticketPrice
+                        }
+                    }
+
+                    let routes = routeMap.compactMap { key, minPrice -> Route? in
+                        let parts = key.components(separatedBy: "|")
+                        guard parts.count == 2 else { return nil }
+                        return Route(id: key, from: parts[0], to: parts[1], minPrice: minPrice)
+                    }.sorted { $0.minPrice < $1.minPrice }
+
+                    self.popularRoutes = Array(routes.prefix(10))
                 }
             }
     }
@@ -50,7 +67,7 @@ class RouteViewModel: ObservableObject {
         let permissionCode = FirestoreErrorCode.permissionDenied.rawValue
 
         if nsError.domain == FirestoreErrorDomain, nsError.code == permissionCode {
-            return "\(fallbackPrefix): Missing or insufficient permissions. Please update Firestore rules for popularRoutes read access."
+            return "\(fallbackPrefix): Missing or insufficient permissions. Please update Firestore rules for busTrips read access."
         }
 
         return "\(fallbackPrefix): \(error.localizedDescription)"

@@ -17,6 +17,14 @@ struct Route: Identifiable {
         "From ৳\(minPrice)"
     }
 
+    // MARK: - Local Initializer
+    init(id: String, from: String, to: String, minPrice: Int) {
+        self.id = id
+        self.from = from
+        self.to = to
+        self.minPrice = minPrice
+    }
+
     // MARK: - Firestore Initializer
     init?(documentID: String, data: [String: Any]) {
         guard

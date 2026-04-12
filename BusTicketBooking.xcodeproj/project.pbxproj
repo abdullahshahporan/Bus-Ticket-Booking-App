@@ -56,6 +56,14 @@
 		B2C3D4E5F6A7B2C3D4E5F604 /* RouteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B2C3D4E5F603 /* RouteViewModel.swift */; };
 		C3D4E5F6A7B8C3D4E5F6A702 /* SeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D4E5F6A7B8C3D4E5F6A701 /* SeedService.swift */; };
 		D4E5F6A7B8C9D4E5F6A7B802 /* SeatSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A7B8C9D4E5F6A7B801 /* SeatSelectionView.swift */; };
+		E5F6A7B8C9DAE5F6A7B8C901 /* District.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C900 /* District.swift */; };
+		E5F6A7B8C9DAE5F6A7B8C903 /* DistrictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C902 /* DistrictService.swift */; };
+		E5F6A7B8C9DAE5F6A7B8C905 /* DistrictPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C904 /* DistrictPickerView.swift */; };
+		E5F6A7B8C9DAE5F6A7B8C907 /* DistrictAutocompleteField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C906 /* DistrictAutocompleteField.swift */; };
+		E5F6A7B8C9DAE5F6A7B8C909 /* AdminViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C908 /* AdminViewModel.swift */; };
+		E5F6A7B8C9DAE5F6A7B8C90B /* AdminDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C90A /* AdminDashboardView.swift */; };
+		E5F6A7B8C9DAE5F6A7B8C90D /* AddBusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C90C /* AddBusView.swift */; };
+		E5F6A7B8C9DAE5F6A7B8C90F /* ManageBusesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +129,14 @@
 		B2C3D4E5F6A7B2C3D4E5F603 /* RouteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteViewModel.swift; sourceTree = "<group>"; };
 		C3D4E5F6A7B8C3D4E5F6A701 /* SeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedService.swift; sourceTree = "<group>"; };
 		D4E5F6A7B8C9D4E5F6A7B801 /* SeatSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatSelectionView.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9DAE5F6A7B8C900 /* District.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = District.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9DAE5F6A7B8C902 /* DistrictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DistrictService.swift; path = Utilities/DistrictService.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9DAE5F6A7B8C904 /* DistrictPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistrictPickerView.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9DAE5F6A7B8C906 /* DistrictAutocompleteField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistrictAutocompleteField.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9DAE5F6A7B8C908 /* AdminViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewModel.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9DAE5F6A7B8C90A /* AdminDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminDashboardView.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9DAE5F6A7B8C90C /* AddBusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBusView.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageBusesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				5594B7802F7FF95C007178BC /* TicketPDFGenerator.swift */,
+				E5F6A7B8C9DAE5F6A7B8C902 /* DistrictService.swift */,
 				2295F7042F57E036000425DF /* GoogleService-Info.plist */,
 				223C6D262F50511000BCC29D /* ViewModels */,
 				223C6D152F5042E100BCC29D /* Models */,
@@ -238,6 +255,9 @@
 				A1B2C3D4E5F6A1B2C3D4E506 /* BusTripDetailView.swift */,
 				A1B2C3D4E5F6A1B2C3D4E508 /* SplashScreenView.swift */,
 				D4E5F6A7B8C9D4E5F6A7B801 /* SeatSelectionView.swift */,
+			E5F6A7B8C9DAE5F6A7B8C90A /* AdminDashboardView.swift */,
+			E5F6A7B8C9DAE5F6A7B8C90C /* AddBusView.swift */,
+			E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -251,6 +271,8 @@
 				223C6D112F5042C700BCC29D /* RouteCardView.swift */,
 				223C6D132F5042D400BCC29D /* Theme.swift */,
 				A1B2C3D4E5F6A1B2C3D4E502 /* BusCardView.swift */,
+			E5F6A7B8C9DAE5F6A7B8C904 /* DistrictPickerView.swift */,
+			E5F6A7B8C9DAE5F6A7B8C906 /* DistrictAutocompleteField.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -263,6 +285,7 @@
 				223C6D162F5042F000BCC29D /* Route.swift */,
 				223C6D1A2F5050B000BCC29D /* UserModel.swift */,
 				A1B2C3D4E5F6A1B2C3D4E500 /* BusTrip.swift */,
+			E5F6A7B8C9DAE5F6A7B8C900 /* District.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -275,6 +298,7 @@
 				B2C3D4E5F6A7B2C3D4E5F601 /* BusTripViewModel.swift */,
 				B2C3D4E5F6A7B2C3D4E5F603 /* RouteViewModel.swift */,
 				C3D4E5F6A7B8C3D4E5F6A701 /* SeedService.swift */,
+			E5F6A7B8C9DAE5F6A7B8C908 /* AdminViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -458,6 +482,14 @@
 				B2C3D4E5F6A7B2C3D4E5F602 /* BusTripViewModel.swift in Sources */,
 				B2C3D4E5F6A7B2C3D4E5F604 /* RouteViewModel.swift in Sources */,
 				C3D4E5F6A7B8C3D4E5F6A702 /* SeedService.swift in Sources */,
+				E5F6A7B8C9DAE5F6A7B8C901 /* District.swift in Sources */,
+				E5F6A7B8C9DAE5F6A7B8C903 /* DistrictService.swift in Sources */,
+				E5F6A7B8C9DAE5F6A7B8C905 /* DistrictPickerView.swift in Sources */,
+				E5F6A7B8C9DAE5F6A7B8C907 /* DistrictAutocompleteField.swift in Sources */,
+				E5F6A7B8C9DAE5F6A7B8C909 /* AdminViewModel.swift in Sources */,
+				E5F6A7B8C9DAE5F6A7B8C90B /* AdminDashboardView.swift in Sources */,
+				E5F6A7B8C9DAE5F6A7B8C90D /* AddBusView.swift in Sources */,
+				E5F6A7B8C9DAE5F6A7B8C90F /* ManageBusesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
