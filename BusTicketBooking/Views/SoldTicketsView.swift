@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SoldTicketsView: View {
+    @EnvironmentObject private var authViewModel: AuthViewModel
     @StateObject private var adminVM = AdminViewModel()
 
     private let bookingFormatter: DateFormatter = {
@@ -20,7 +21,19 @@ struct SoldTicketsView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if adminVM.isLoading {
+                if !authViewModel.isAdmin {
+                    VStack(spacing: 12) {
+                        Image(systemName: "lock.shield")
+                            .font(.system(size: 40))
+                            .foregroundColor(.orange)
+                        Text("Admin access required")
+                            .font(.headline)
+                        Text("Only admin users can monitor sold tickets.")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if adminVM.isLoading {
                     VStack(spacing: 12) {
                         ProgressView()
                         Text("Loading sold tickets...")
@@ -72,10 +85,14 @@ struct SoldTicketsView: View {
             .background(Theme.background)
             .navigationTitle("Sold Tickets")
             .onAppear {
-                Task { await adminVM.fetchSoldTickets() }
+                if authViewModel.isAdmin {
+                    Task { await adminVM.fetchSoldTickets() }
+                }
             }
             .refreshable {
-                await adminVM.fetchSoldTickets()
+                if authViewModel.isAdmin {
+                    await adminVM.fetchSoldTickets()
+                }
             }
         }
     }
