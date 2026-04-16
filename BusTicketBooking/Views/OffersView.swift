@@ -84,6 +84,16 @@ struct OffersView: View {
 struct OfferTripCard: View {
     let trip: BusTrip
 
+    private var gradient: [Color] {
+        if trip.discount >= 30 {
+            return [Color(red: 0.04, green: 0.33, blue: 0.65), Color(red: 0.00, green: 0.60, blue: 0.72)]
+        }
+        if trip.discount >= 15 {
+            return [Color(red: 0.12, green: 0.45, blue: 0.20), Color(red: 0.26, green: 0.67, blue: 0.25)]
+        }
+        return [Color(red: 0.52, green: 0.20, blue: 0.12), Color(red: 0.80, green: 0.39, blue: 0.16)]
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {

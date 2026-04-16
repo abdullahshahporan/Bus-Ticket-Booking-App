@@ -70,13 +70,14 @@ struct Booking: Identifiable {
             return nil
         }()
 
+        let statusStr = (data["status"] as? String) ?? BookingStatus.confirmed.rawValue
+
         guard
             let userId = data["userId"] as? String,
             let seatIndices = decodedSeatIndices,
             let seatLabels = data["seatLabels"] as? [String],
             let totalPrice = decodeInt(data["totalPrice"]),
             let timestamp = decodeTimeInterval(data["bookingDate"]),
-            let statusStr = data["status"] as? String ?? "confirmed",
             let status = BookingStatus(rawValue: statusStr)
         else { return nil }
         
