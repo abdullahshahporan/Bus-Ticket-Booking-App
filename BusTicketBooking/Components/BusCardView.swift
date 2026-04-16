@@ -75,10 +75,26 @@ struct BusCardView: View {
 
                 Spacer()
 
-                Text(trip.priceFormatted)
-                    .font(.title3)
-                    .bold()
-                    .foregroundColor(Theme.primaryColor)
+                VStack(alignment: .trailing, spacing: 2) {
+                    if trip.hasDiscount {
+                        Text("\(trip.discount)% OFF")
+                            .font(.caption2)
+                            .bold()
+                            .foregroundColor(.red)
+                    }
+                    HStack(spacing: 6) {
+                        if trip.hasDiscount {
+                            Text(trip.priceFormatted)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .strikethrough()
+                        }
+                        Text(trip.hasDiscount ? trip.discountedPriceFormatted : trip.priceFormatted)
+                            .font(.title3)
+                            .bold()
+                            .foregroundColor(Theme.primaryColor)
+                    }
+                }
             }
         }
         .padding()

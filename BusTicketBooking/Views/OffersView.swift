@@ -8,84 +8,121 @@
 import SwiftUI
 
 struct OffersView: View {
+    @StateObject private var viewModel = BusTripViewModel()
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    // Header
-                    VStack(spacing: 8) {
-                        Image(systemName: "tag.fill")
-                            .font(.system(size: 50))
-                            .foregroundColor(Theme.primaryColor)
-                        Text("Offers & Deals")
-                            .font(.title2)
-                            .bold()
-                        Text("Grab the best deals on bus tickets")
+            Group {
+                if viewModel.isLoading {
+                    VStack(spacing: 12) {
+                        ProgressView()
+                        Text("Loading offers...")
+                            .foregroundColor(.gray)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let error = viewModel.errorMessage {
+                    VStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 40))
+                            .foregroundColor(.orange)
+                        Text(error)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.gray)
+                        Button("Retry") {
+                            viewModel.fetchOfferTrips()
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(Theme.primaryColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if viewModel.trips.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "tag.slash")
+                            .font(.system(size: 44))
+                            .foregroundColor(.gray.opacity(0.6))
+                        Text("No offers available")
+                            .font(.headline)
+                        Text("Discounted trips will appear here.")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
-                    .padding(.top, 20)
-
-                    OfferCard(
-                        title: "First Ride Discount",
-                        description: "Get 15% off on your first bus booking!",
-                        code: "FIRST15",
-                        gradient: [Theme.primaryColor, Theme.secondaryColor1]
-                    )
-
-                    OfferCard(
-                        title: "Weekend Special",
-                        description: "Flat ৳100 off on weekend travel bookings.",
-                        code: "WEEKEND100",
-                        gradient: [Theme.secondaryColor2, Theme.secondaryColor1]
-                    )
-
-                    OfferCard(
-                        title: "Group Booking",
-                        description: "Book 4+ seats and save 10% instantly.",
-                        code: "GROUP10",
-                        gradient: [.orange, Theme.primaryColor]
-                    )
-
-                    OfferCard(
-                        title: "Night Travel Deal",
-                        description: "Save ৳50 on all night bus bookings.",
-                        code: "NIGHT50",
-                        gradient: [.indigo, Theme.primaryColor]
-                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        VStack(spacing: 14) {
+                            ForEach(viewModel.trips) { trip in
+                                NavigationLink(destination: BusTripDetailView(trip: trip, travelDate: Date())) {
+                                    OfferTripCard(trip: trip)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding()
+                    }
                 }
-                .padding()
             }
             .background(Theme.background)
             .navigationTitle("Offers")
+            .onAppear {
+                if viewModel.trips.isEmpty {
+                    viewModel.fetchOfferTrips()
+                }
+            }
+            .refreshable {
+                viewModel.fetchOfferTrips()
+            }
         }
     }
 }
 
-// MARK: - Offer Card
+// MARK: - Offer Trip Card
 
-struct OfferCard: View {
-    let title: String
-    let description: String
-    let code: String
-    let gradient: [Color]
+struct OfferTripCard: View {
+    let trip: BusTrip
+
+    private var gradient: [Color] {
+        if trip.discount >= 30 {
+            return [Color(red: 0.04, green: 0.33, blue: 0.65), Color(red: 0.00, green: 0.60, blue: 0.72)]
+        }
+        if trip.discount >= 15 {
+            return [Color(red: 0.12, green: 0.45, blue: 0.20), Color(red: 0.26, green: 0.67, blue: 0.25)]
+        }
+        return [Color(red: 0.52, green: 0.20, blue: 0.12), Color(red: 0.80, green: 0.39, blue: 0.16)]
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.headline)
-                .foregroundColor(.white)
-            Text(description)
-                .font(.subheadline)
-                .foregroundColor(.white.opacity(0.9))
             HStack {
-                Text("Code: \(code)")
+                Text(trip.busName)
+                    .font(.headline)
+                    .foregroundColor(.white)
+                Spacer()
+                Text("\(trip.discount)% OFF")
                     .font(.caption)
                     .bold()
-                    .padding(.horizontal, 12)
+                    .padding(.horizontal, 10)
                     .padding(.vertical, 6)
                     .background(Color.white.opacity(0.2))
                     .cornerRadius(8)
+                    .foregroundColor(.white)
+            }
+
+            Text("\(trip.source) → \(trip.destination)")
+                .font(.subheadline)
+                .foregroundColor(.white.opacity(0.9))
+
+            HStack {
+                Text(trip.priceFormatted)
+                    .font(.caption)
+                    .strikethrough()
+                    .foregroundColor(.white.opacity(0.8))
+                Text(trip.discountedPriceFormatted)
+                    .font(.headline)
+                    .bold()
                     .foregroundColor(.white)
                 Spacer()
             }

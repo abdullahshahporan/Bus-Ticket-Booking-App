@@ -54,4 +54,37 @@ class BusTripViewModel: ObservableObject {
                 }
             }
     }
+
+    func fetchOfferTrips() {
+        isLoading = true
+        errorMessage = nil
+        trips = []
+
+        db.collection("busTrips")
+            .whereField("discount", isGreaterThan: 0)
+            .getDocuments { [weak self] snapshot, error in
+                Task { @MainActor [weak self] in
+                    guard let self = self else { return }
+                    self.isLoading = false
+
+                    if let error = error {
+                        self.errorMessage = "Unable to load offers: \(error.localizedDescription)"
+                        return
+                    }
+
+                    let fetched: [BusTrip] = snapshot?.documents.compactMap { doc in
+                        BusTrip(documentID: doc.documentID, data: doc.data())
+                    } ?? []
+
+                    self.trips = fetched
+                        .filter { $0.hasDiscount }
+                        .sorted { lhs, rhs in
+                            if lhs.discount == rhs.discount {
+                                return lhs.discountedPrice < rhs.discountedPrice
+                            }
+                            return lhs.discount > rhs.discount
+                        }
+                }
+            }
+    }
 }

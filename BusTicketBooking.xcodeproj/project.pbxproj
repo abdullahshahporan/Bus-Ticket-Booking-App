@@ -64,6 +64,8 @@
 		E5F6A7B8C9DAE5F6A7B8C90B /* AdminDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C90A /* AdminDashboardView.swift */; };
 		E5F6A7B8C9DAE5F6A7B8C90D /* AddBusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C90C /* AddBusView.swift */; };
 		E5F6A7B8C9DAE5F6A7B8C90F /* ManageBusesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */; };
+		F6A7B8C9DAE6F7A8B9C0D101 /* SoldTicketsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7B8C9DAE6F7A8B9C0D100 /* SoldTicketsView.swift */; };
+		F6A7B8C9DAE6F7A8B9C0D103 /* AdminProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7B8C9DAE6F7A8B9C0D102 /* AdminProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -137,6 +139,8 @@
 		E5F6A7B8C9DAE5F6A7B8C90A /* AdminDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminDashboardView.swift; sourceTree = "<group>"; };
 		E5F6A7B8C9DAE5F6A7B8C90C /* AddBusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBusView.swift; sourceTree = "<group>"; };
 		E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageBusesView.swift; sourceTree = "<group>"; };
+		F6A7B8C9DAE6F7A8B9C0D100 /* SoldTicketsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldTicketsView.swift; sourceTree = "<group>"; };
+		F6A7B8C9DAE6F7A8B9C0D102 /* AdminProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,6 +262,8 @@
 			E5F6A7B8C9DAE5F6A7B8C90A /* AdminDashboardView.swift */,
 			E5F6A7B8C9DAE5F6A7B8C90C /* AddBusView.swift */,
 			E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */,
+			F6A7B8C9DAE6F7A8B9C0D100 /* SoldTicketsView.swift */,
+			F6A7B8C9DAE6F7A8B9C0D102 /* AdminProfileView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -490,6 +496,8 @@
 				E5F6A7B8C9DAE5F6A7B8C90B /* AdminDashboardView.swift in Sources */,
 				E5F6A7B8C9DAE5F6A7B8C90D /* AddBusView.swift in Sources */,
 				E5F6A7B8C9DAE5F6A7B8C90F /* ManageBusesView.swift in Sources */,
+				F6A7B8C9DAE6F7A8B9C0D101 /* SoldTicketsView.swift in Sources */,
+				F6A7B8C9DAE6F7A8B9C0D103 /* AdminProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
