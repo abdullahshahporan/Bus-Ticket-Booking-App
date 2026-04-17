@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct BusListView: View {
 
     let fromCity: String

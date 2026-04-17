@@ -70,4 +70,22 @@ final class BusTicketBookingTests: XCTestCase {
         XCTAssertTrue(trip.hasDiscount)
     }
 
+    func testDefaultAdminCredentialsMatchTrimmedCaseInsensitiveEmail() {
+        XCTAssertTrue(
+            DefaultAdminAccount.matches(
+                email: "  ADMIN@gmail.com ",
+                password: "Admin123@"
+            )
+        )
+    }
+
+    func testDefaultAdminCredentialsRejectWrongPassword() {
+        XCTAssertFalse(
+            DefaultAdminAccount.matches(
+                email: "admin@gmail.com",
+                password: "wrong-password"
+            )
+        )
+    }
+
 }

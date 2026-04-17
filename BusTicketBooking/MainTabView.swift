@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct MainTabView: View {
     var body: some View {
         TabView {

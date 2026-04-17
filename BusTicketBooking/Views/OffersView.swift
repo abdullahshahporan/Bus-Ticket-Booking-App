@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct OffersView: View {
     @StateObject private var viewModel = BusTripViewModel()
 

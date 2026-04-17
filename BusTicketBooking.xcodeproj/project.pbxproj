@@ -31,14 +31,9 @@
 		223C6D232F5050F000BCC29D /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C6D222F5050F000BCC29D /* ChangePasswordView.swift */; };
 		223C6D252F50510000BCC29D /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C6D242F50510000BCC29D /* ProfileView.swift */; };
 		223C6D2E2F50516000BCC29D /* NotificationPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C6D2F2F50516000BCC29D /* NotificationPreferencesView.swift */; };
-		2295F6F52F57DFF0000425DF /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F6F42F57DFF0000425DF /* FirebaseAnalytics */; };
-		2295F6F72F57DFF0000425DF /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F6F62F57DFF0000425DF /* FirebaseAnalyticsSwift */; };
 		2295F6F92F57DFF0000425DF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F6F82F57DFF0000425DF /* FirebaseAuth */; };
-		2295F6FB2F57DFF0000425DF /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F6FA2F57DFF0000425DF /* FirebaseDatabase */; };
-		2295F6FD2F57DFF0000425DF /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F6FC2F57DFF0000425DF /* FirebaseDatabaseSwift */; };
 		2295F6FF2F57DFF0000425DF /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F6FE2F57DFF0000425DF /* FirebaseFirestore */; };
 		2295F7012F57DFF0000425DF /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F7002F57DFF0000425DF /* FirebaseFirestoreSwift */; };
-		2295F7032F57DFF0000425DF /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 2295F7022F57DFF0000425DF /* FirebaseStorage */; };
 		2295F7052F57E036000425DF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2295F7042F57E036000425DF /* GoogleService-Info.plist */; };
 		555B6D8F2F7ADFAB00583C58 /* BookingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555B6D8E2F7ADFAB00583C58 /* BookingViewModel.swift */; };
 		555B6D942F7AE00B00583C58 /* SeatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555B6D922F7AE00B00583C58 /* SeatHelper.swift */; };
@@ -66,6 +61,10 @@
 		E5F6A7B8C9DAE5F6A7B8C90F /* ManageBusesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */; };
 		F6A7B8C9DAE6F7A8B9C0D101 /* SoldTicketsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7B8C9DAE6F7A8B9C0D100 /* SoldTicketsView.swift */; };
 		F6A7B8C9DAE6F7A8B9C0D103 /* AdminProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A7B8C9DAE6F7A8B9C0D102 /* AdminProfileView.swift */; };
+		7A1B2C3D4E5F6A7B8C9D0002 /* OperatorDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1B2C3D4E5F6A7B8C9D0001 /* OperatorDashboardView.swift */; };
+		7A1B2C3D4E5F6A7B8C9D0004 /* AdminDashboardComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1B2C3D4E5F6A7B8C9D0003 /* AdminDashboardComponents.swift */; };
+		7A1B2C3D4E5F6A7B8C9D0006 /* CreateOperatorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1B2C3D4E5F6A7B8C9D0005 /* CreateOperatorSheet.swift */; };
+		7A1B2C3D4E5F6A7B8C9D0008 /* BookingNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1B2C3D4E5F6A7B8C9D0007 /* BookingNotificationService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +140,10 @@
 		E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageBusesView.swift; sourceTree = "<group>"; };
 		F6A7B8C9DAE6F7A8B9C0D100 /* SoldTicketsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldTicketsView.swift; sourceTree = "<group>"; };
 		F6A7B8C9DAE6F7A8B9C0D102 /* AdminProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminProfileView.swift; sourceTree = "<group>"; };
+		7A1B2C3D4E5F6A7B8C9D0001 /* OperatorDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperatorDashboardView.swift; sourceTree = "<group>"; };
+		7A1B2C3D4E5F6A7B8C9D0003 /* AdminDashboardComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminDashboardComponents.swift; sourceTree = "<group>"; };
+		7A1B2C3D4E5F6A7B8C9D0005 /* CreateOperatorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOperatorSheet.swift; sourceTree = "<group>"; };
+		7A1B2C3D4E5F6A7B8C9D0007 /* BookingNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BookingNotificationService.swift; path = Utilities/BookingNotificationService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,13 +151,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2295F6FD2F57DFF0000425DF /* FirebaseDatabaseSwift in Frameworks */,
-				2295F6F72F57DFF0000425DF /* FirebaseAnalyticsSwift in Frameworks */,
 				2295F6F92F57DFF0000425DF /* FirebaseAuth in Frameworks */,
 				2295F7012F57DFF0000425DF /* FirebaseFirestoreSwift in Frameworks */,
-				2295F6FB2F57DFF0000425DF /* FirebaseDatabase in Frameworks */,
-				2295F7032F57DFF0000425DF /* FirebaseStorage in Frameworks */,
-				2295F6F52F57DFF0000425DF /* FirebaseAnalytics in Frameworks */,
 				2295F6FF2F57DFF0000425DF /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -199,6 +197,7 @@
 		223C6CD72F50405900BCC29D /* BusTicketBooking */ = {
 			isa = PBXGroup;
 			children = (
+				7A1B2C3D4E5F6A7B8C9D0007 /* BookingNotificationService.swift */,
 				5594B7802F7FF95C007178BC /* TicketPDFGenerator.swift */,
 				E5F6A7B8C9DAE5F6A7B8C902 /* DistrictService.swift */,
 				2295F7042F57E036000425DF /* GoogleService-Info.plist */,
@@ -259,11 +258,14 @@
 				A1B2C3D4E5F6A1B2C3D4E506 /* BusTripDetailView.swift */,
 				A1B2C3D4E5F6A1B2C3D4E508 /* SplashScreenView.swift */,
 				D4E5F6A7B8C9D4E5F6A7B801 /* SeatSelectionView.swift */,
-			E5F6A7B8C9DAE5F6A7B8C90A /* AdminDashboardView.swift */,
-			E5F6A7B8C9DAE5F6A7B8C90C /* AddBusView.swift */,
-			E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */,
-			F6A7B8C9DAE6F7A8B9C0D100 /* SoldTicketsView.swift */,
-			F6A7B8C9DAE6F7A8B9C0D102 /* AdminProfileView.swift */,
+				E5F6A7B8C9DAE5F6A7B8C90A /* AdminDashboardView.swift */,
+				7A1B2C3D4E5F6A7B8C9D0001 /* OperatorDashboardView.swift */,
+				7A1B2C3D4E5F6A7B8C9D0003 /* AdminDashboardComponents.swift */,
+				7A1B2C3D4E5F6A7B8C9D0005 /* CreateOperatorSheet.swift */,
+				E5F6A7B8C9DAE5F6A7B8C90C /* AddBusView.swift */,
+				E5F6A7B8C9DAE5F6A7B8C90E /* ManageBusesView.swift */,
+				F6A7B8C9DAE6F7A8B9C0D100 /* SoldTicketsView.swift */,
+				F6A7B8C9DAE6F7A8B9C0D102 /* AdminProfileView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -326,14 +328,9 @@
 			);
 			name = BusTicketBooking;
 			packageProductDependencies = (
-				2295F6F42F57DFF0000425DF /* FirebaseAnalytics */,
-				2295F6F62F57DFF0000425DF /* FirebaseAnalyticsSwift */,
 				2295F6F82F57DFF0000425DF /* FirebaseAuth */,
-				2295F6FA2F57DFF0000425DF /* FirebaseDatabase */,
-				2295F6FC2F57DFF0000425DF /* FirebaseDatabaseSwift */,
 				2295F6FE2F57DFF0000425DF /* FirebaseFirestore */,
 				2295F7002F57DFF0000425DF /* FirebaseFirestoreSwift */,
-				2295F7022F57DFF0000425DF /* FirebaseStorage */,
 			);
 			productName = BusTicketBooking;
 			productReference = 223C6CD52F50405900BCC29D /* BusTicketBooking.app */;
@@ -494,8 +491,12 @@
 				E5F6A7B8C9DAE5F6A7B8C907 /* DistrictAutocompleteField.swift in Sources */,
 				E5F6A7B8C9DAE5F6A7B8C909 /* AdminViewModel.swift in Sources */,
 				E5F6A7B8C9DAE5F6A7B8C90B /* AdminDashboardView.swift in Sources */,
+				7A1B2C3D4E5F6A7B8C9D0002 /* OperatorDashboardView.swift in Sources */,
+				7A1B2C3D4E5F6A7B8C9D0004 /* AdminDashboardComponents.swift in Sources */,
+				7A1B2C3D4E5F6A7B8C9D0006 /* CreateOperatorSheet.swift in Sources */,
 				E5F6A7B8C9DAE5F6A7B8C90D /* AddBusView.swift in Sources */,
 				E5F6A7B8C9DAE5F6A7B8C90F /* ManageBusesView.swift in Sources */,
+				7A1B2C3D4E5F6A7B8C9D0008 /* BookingNotificationService.swift in Sources */,
 				F6A7B8C9DAE6F7A8B9C0D101 /* SoldTicketsView.swift in Sources */,
 				F6A7B8C9DAE6F7A8B9C0D103 /* AdminProfileView.swift in Sources */,
 			);
@@ -670,10 +671,13 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = ios.BusTicketBooking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -707,10 +711,13 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = ios.BusTicketBooking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -731,7 +738,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ios.BusTicketBookingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -753,7 +760,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ios.BusTicketBookingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -774,7 +781,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ios.BusTicketBookingUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -795,7 +802,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ios.BusTicketBookingUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -849,37 +856,17 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
+				kind = exactVersion;
+				version = 8.15.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2295F6F42F57DFF0000425DF /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2295F6F32F57DFF0000425DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		2295F6F62F57DFF0000425DF /* FirebaseAnalyticsSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2295F6F32F57DFF0000425DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsSwift;
-		};
 		2295F6F82F57DFF0000425DF /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2295F6F32F57DFF0000425DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
-		};
-		2295F6FA2F57DFF0000425DF /* FirebaseDatabase */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2295F6F32F57DFF0000425DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabase;
-		};
-		2295F6FC2F57DFF0000425DF /* FirebaseDatabaseSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2295F6F32F57DFF0000425DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabaseSwift;
 		};
 		2295F6FE2F57DFF0000425DF /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -890,11 +877,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2295F6F32F57DFF0000425DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestoreSwift;
-		};
-		2295F7022F57DFF0000425DF /* FirebaseStorage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2295F6F32F57DFF0000425DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

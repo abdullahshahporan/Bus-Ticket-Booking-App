@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct NotificationPreferencesView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.dismiss) var dismiss
@@ -44,7 +45,7 @@ struct NotificationPreferencesView: View {
                     notificationToggle(
                         icon: "envelope.fill",
                         title: "Email Notifications",
-                        subtitle: "Receive booking confirmations via email",
+                        subtitle: "Reserved for email confirmations when email delivery is configured",
                         isOn: $emailNotifications
                     )
                     

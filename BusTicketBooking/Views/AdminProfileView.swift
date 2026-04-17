@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct AdminProfileView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
 

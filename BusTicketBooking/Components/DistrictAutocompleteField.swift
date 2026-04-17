@@ -5,6 +5,7 @@
 
 import SwiftUI
 
+@MainActor
 struct DistrictAutocompleteField: View {
     let label: String
     let icon: String

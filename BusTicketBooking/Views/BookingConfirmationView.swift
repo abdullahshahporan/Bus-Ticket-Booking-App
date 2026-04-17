@@ -5,9 +5,8 @@
 
 import SwiftUI
 import FirebaseAuth
-import FirebaseFirestore
-import UserNotifications
 
+@MainActor
 struct BookingConfirmationView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
 
@@ -245,10 +244,11 @@ struct BookingConfirmationView: View {
                 print("PDF generation failed: \(error.localizedDescription)")
             }
 
-            let didSchedule = await scheduleNotification()
-            paymentMessage = didSchedule
-                ? "Booking confirmed! Tap Download to save your ticket."
-                : "Booking confirmed! (Enable notifications to get reminders.)"
+            let notificationResult = await BookingNotificationService.shared.scheduleBookingConfirmation(
+                for: saved,
+                preferences: authViewModel.currentUser?.notificationPreferences
+            )
+            paymentMessage = bookingMessage(for: notificationResult)
 
             hasConfirmed = true
             showPaymentAlert = true
@@ -261,34 +261,14 @@ struct BookingConfirmationView: View {
         showShareSheet = true
     }
 
-    private func scheduleNotification() async -> Bool {
-        let center = UNUserNotificationCenter.current()
-        let settings = await center.notificationSettings()
-
-        if settings.authorizationStatus == .notDetermined {
-            let granted = (try? await center.requestAuthorization(options: [.alert, .sound, .badge])) ?? false
-            guard granted else { return false }
-        } else if settings.authorizationStatus != .authorized && settings.authorizationStatus != .provisional {
-            return false
-        }
-
-        let content = UNMutableNotificationContent()
-        content.title = "Booking Confirmed ✅"
-        content.body  = "Your ticket for \(confirmation.trip.source) → \(confirmation.trip.destination) is confirmed."
-        content.sound = .default
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request  = UNNotificationRequest(
-            identifier: "booking-confirmation-\(confirmation.id)",
-            content: content,
-            trigger: trigger
-        )
-
-        do {
-            try await center.add(request)
-            return true
-        } catch {
-            return false
+    private func bookingMessage(for notificationResult: BookingNotificationResult) -> String {
+        switch notificationResult {
+        case .sent:
+            return "Booking confirmed! A confirmation notification has been sent. Tap Download to save your ticket."
+        case .disabledByPreferences:
+            return "Booking confirmed! Push notifications are turned off in your preferences."
+        case .denied, .failed:
+            return "Booking confirmed! Tap Download to save your ticket."
         }
     }
 }

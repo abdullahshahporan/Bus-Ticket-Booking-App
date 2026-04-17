@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct SignUpView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.dismiss) var dismiss

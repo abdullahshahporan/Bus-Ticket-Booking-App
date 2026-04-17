@@ -9,10 +9,12 @@ import SwiftUI
 import FirebaseCore
 
 @main
+@MainActor
 struct BusTicketBookingApp: App {
     
     init() {
         FirebaseApp.configure()
+        BookingNotificationService.shared.configure()
     }
     
     var body: some Scene {

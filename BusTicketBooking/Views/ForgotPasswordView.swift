@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct ForgotPasswordView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.dismiss) var dismiss

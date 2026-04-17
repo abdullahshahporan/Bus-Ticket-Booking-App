@@ -18,31 +18,43 @@ class AuthViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var successMessage: String?
     @Published var isAdmin = false
+    @Published var isOperator = false
+    @Published var hasResolvedSession = false
     
     private let db = Firestore.firestore()
     private var authStateHandle: AuthStateDidChangeListenerHandle?
     
     init() {
-        // MARK: - Token Management: Auth state listener
         setupAuthListener()
     }
     
     private func setupAuthListener() {
+        if let handle = authStateHandle {
+            Auth.auth().removeStateDidChangeListener(handle)
+        }
+
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor [weak self] in
                 guard let self = self else { return }
-                let isAdminEmail = user?.email?.lowercased() == "admin@gmail.com"
-                if let user = user, (user.isEmailVerified || isAdminEmail) {
-                    self.userSession = user
-                    self.isAdmin = isAdminEmail
-                    if self.currentUser == nil {
-                        await self.fetchUserProfile()
+
+                if let user = user {
+                    let resolvedRole = await self.fetchStoredRole(
+                        userId: user.uid,
+                        email: user.email
+                    )
+
+                    if user.isEmailVerified || !resolvedRole.requiresEmailVerification {
+                        self.userSession = user
+                        self.applyRole(resolvedRole)
+                        await self.fetchUserProfile(expectedRole: resolvedRole)
+                    } else {
+                        self.clearSessionState()
                     }
                 } else {
-                    self.userSession = nil
-                    self.currentUser = nil
-                    self.isAdmin = false
+                    self.clearSessionState()
                 }
+
+                self.hasResolvedSession = true
             }
         }
     }
@@ -60,6 +72,7 @@ class AuthViewModel: ObservableObject {
             let tokenResult = try await user.getIDTokenResult(forcingRefresh: true)
             _ = tokenResult.token
             self.userSession = user
+            self.hasResolvedSession = true
         } catch {
             self.errorMessage = "Session expired. Please sign in again."
             signOut()
@@ -71,30 +84,44 @@ class AuthViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         successMessage = nil
+        hasResolvedSession = false
         
         do {
-            let result = try await Auth.auth().createUser(withEmail: email, password: password)
-            try await result.user.sendEmailVerification()
+            let normalizedEmail = DefaultAdminAccount.normalizedEmail(email)
+            let sanitizedPassword = DefaultAdminAccount.sanitizedPassword(password)
+            let result = try await Auth.auth().createUser(withEmail: normalizedEmail, password: sanitizedPassword)
+            let role = defaultRole(for: normalizedEmail)
+
+            if role.requiresEmailVerification {
+                try await result.user.sendEmailVerification()
+            }
             
             let userProfile = UserProfile(
                 id: result.user.uid,
                 fullName: fullName,
-                email: email,
-                role: email.lowercased() == "admin@gmail.com" ? "admin" : "user"
+                email: normalizedEmail,
+                role: role.rawValue
             )
             
             try await saveUserProfile(userProfile)
             
-            // Sign out so user must verify email before signing in
-            try Auth.auth().signOut()
-            self.userSession = nil
-            self.currentUser = nil
+            if role.requiresEmailVerification {
+                try Auth.auth().signOut()
+                clearSessionState()
+                successMessage = "Account created successfully! Please check your email to verify your account before signing in."
+            } else {
+                self.userSession = result.user
+                self.applyRole(role)
+                await self.fetchUserProfile(expectedRole: role)
+                successMessage = "\(role.displayName) account created successfully."
+            }
             
             isLoading = false
-            successMessage = "Account created successfully! Please check your email to verify your account before signing in."
+            hasResolvedSession = true
         } catch {
             isLoading = false
             errorMessage = error.localizedDescription
+            hasResolvedSession = true
         }
     }
     
@@ -105,13 +132,21 @@ class AuthViewModel: ObservableObject {
         successMessage = nil
         
         do {
-            // Temporarily remove listener to avoid state flickering
+            let normalizedEmail = DefaultAdminAccount.normalizedEmail(email)
+            let sanitizedPassword = DefaultAdminAccount.sanitizedPassword(password)
+
             if let handle = authStateHandle {
                 Auth.auth().removeStateDidChangeListener(handle)
             }
             
-            let result = try await Auth.auth().signIn(withEmail: email, password: password)
-            if !result.user.isEmailVerified {
+            let result = try await Auth.auth().signIn(withEmail: normalizedEmail, password: sanitizedPassword)
+            let role = await fetchStoredRole(userId: result.user.uid, email: result.user.email)
+
+            if !role.requiresEmailVerification {
+                try Auth.auth().signOut()
+                isLoading = false
+                successMessage = "This account can sign in without email verification."
+            } else if !result.user.isEmailVerified {
                 try await result.user.sendEmailVerification()
                 try Auth.auth().signOut()
                 isLoading = false
@@ -122,13 +157,13 @@ class AuthViewModel: ObservableObject {
                 successMessage = "Your email is already verified. Please sign in."
             }
             
-            // Re-attach listener
             setupAuthListener()
+            hasResolvedSession = true
         } catch {
-            // Re-attach listener on error too
             setupAuthListener()
             isLoading = false
             errorMessage = error.localizedDescription
+            hasResolvedSession = true
         }
     }
     
@@ -137,27 +172,53 @@ class AuthViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         successMessage = nil
-        
-        let isAdminEmail = email.lowercased() == "admin@gmail.com"
+        hasResolvedSession = false
+
+        let normalizedEmail = DefaultAdminAccount.normalizedEmail(email)
+        let sanitizedPassword = DefaultAdminAccount.sanitizedPassword(password)
         
         do {
-            let result = try await Auth.auth().signIn(withEmail: email, password: password)
+            let result = try await Auth.auth().signIn(withEmail: normalizedEmail, password: sanitizedPassword)
+            let resolvedRole = await fetchStoredRole(
+                userId: result.user.uid,
+                email: result.user.email ?? normalizedEmail
+            )
             
-            // Skip email verification for admin
-            if !isAdminEmail && !result.user.isEmailVerified {
+            if resolvedRole.requiresEmailVerification && !result.user.isEmailVerified {
                 try Auth.auth().signOut()
                 isLoading = false
                 errorMessage = "Please verify your email before signing in. Check your inbox for the verification link."
+                hasResolvedSession = true
                 return
             }
             
             self.userSession = result.user
-            self.isAdmin = isAdminEmail
+            self.applyRole(resolvedRole)
             isLoading = false
-            await fetchUserProfile()
+            await fetchUserProfile(expectedRole: resolvedRole)
+            hasResolvedSession = true
         } catch {
+            if shouldProvisionDefaultAdmin(email: normalizedEmail, password: sanitizedPassword, error: error) {
+                do {
+                    let result = try await provisionDefaultAdmin(email: normalizedEmail, password: sanitizedPassword)
+                    self.userSession = result.user
+                    self.applyRole(.admin)
+                    isLoading = false
+                    successMessage = "Default admin account created successfully."
+                    await fetchUserProfile(expectedRole: .admin)
+                    hasResolvedSession = true
+                    return
+                } catch {
+                    isLoading = false
+                    errorMessage = error.localizedDescription
+                    hasResolvedSession = true
+                    return
+                }
+            }
+
             isLoading = false
             errorMessage = error.localizedDescription
+            hasResolvedSession = true
         }
     }
     
@@ -165,11 +226,10 @@ class AuthViewModel: ObservableObject {
     func signOut() {
         do {
             try Auth.auth().signOut()
-            self.userSession = nil
-            self.currentUser = nil
-            self.isAdmin = false
+            clearSessionState()
             self.errorMessage = nil
             self.successMessage = nil
+            self.hasResolvedSession = true
         } catch {
             self.errorMessage = error.localizedDescription
         }
@@ -182,7 +242,8 @@ class AuthViewModel: ObservableObject {
         successMessage = nil
         
         do {
-            try await Auth.auth().sendPasswordReset(withEmail: email)
+            let normalizedEmail = DefaultAdminAccount.normalizedEmail(email)
+            try await Auth.auth().sendPasswordReset(withEmail: normalizedEmail)
             isLoading = false
             successMessage = "Password reset email sent. Please check your inbox."
         } catch {
@@ -216,13 +277,15 @@ class AuthViewModel: ObservableObject {
     }
     
     // MARK: - Fetch User Profile from Firestore
-    func fetchUserProfile() async {
+    func fetchUserProfile(expectedRole: AppUserRole? = nil) async {
         guard let uid = userSession?.uid else { return }
+        let fallbackRole = expectedRole ?? defaultRole(for: userSession?.email)
         
         do {
             let snapshot = try await db.collection("users").document(uid).getDocument()
             
             if let data = snapshot.data() {
+                let resolvedRole = AppUserRole(rawValue: data["role"] as? String ?? fallbackRole.rawValue) ?? fallbackRole
                 let notifPrefs = NotificationPreferences.fromDictionary(data["notificationPreferences"] as? [String: Any])
                 
                 self.currentUser = UserProfile(
@@ -232,43 +295,41 @@ class AuthViewModel: ObservableObject {
                     phone: data["phone"] as? String ?? "",
                     contactNo: data["contactNo"] as? String ?? "",
                     address: data["address"] as? String ?? "",
-                    role: data["role"] as? String ?? "user",
+                    role: resolvedRole.rawValue,
                     notificationPreferences: notifPrefs,
                     createdAt: (data["createdAt"] as? Timestamp)?.dateValue() ?? Date(),
                     updatedAt: (data["updatedAt"] as? Timestamp)?.dateValue() ?? Date()
                 )
-                
-                // Check admin role from Firestore
-                if let role = data["role"] as? String, role == "admin" {
-                    self.isAdmin = true
-                }
-                if self.userSession?.email?.lowercased() == "admin@gmail.com" {
-                    self.isAdmin = true
-                }
+                self.applyRole(resolvedRole)
             } else {
-                // Document doesn't exist in Firestore (edge case: Auth succeeded but Firestore save failed during signup)
-                // Create a basic profile so the user isn't stuck
                 let email = userSession?.email ?? ""
-                let profile = UserProfile(id: uid, fullName: email.components(separatedBy: "@").first ?? "User", email: email)
+                let profile = UserProfile(
+                    id: uid,
+                    fullName: email.components(separatedBy: "@").first ?? fallbackRole.displayName,
+                    email: email,
+                    role: fallbackRole.rawValue
+                )
                 try await saveUserProfile(profile)
                 self.currentUser = profile
+                self.applyRole(fallbackRole)
             }
         } catch {
             let nsError = error as NSError
             let permissionCode = FirestoreErrorCode.permissionDenied.rawValue
 
             if nsError.domain == FirestoreErrorDomain, nsError.code == permissionCode {
-                // Keep profile usable even when Firestore read is blocked by rules.
                 let email = userSession?.email ?? ""
                 let fallbackName = userSession?.displayName
                     ?? email.components(separatedBy: "@").first
-                    ?? "User"
+                    ?? fallbackRole.displayName
 
                 self.currentUser = UserProfile(
                     id: uid,
                     fullName: fallbackName,
-                    email: email
+                    email: email,
+                    role: fallbackRole.rawValue
                 )
+                self.applyRole(fallbackRole)
                 self.errorMessage = "Unable to load full profile from Firestore: Missing or insufficient permissions."
                 return
             }
@@ -355,5 +416,76 @@ class AuthViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func fetchStoredRole(userId: String, email: String?) async -> AppUserRole {
+        do {
+            let snapshot = try await db.collection("users").document(userId).getDocument()
+            if let roleString = snapshot.data()?["role"] as? String,
+               let role = AppUserRole(rawValue: roleString) {
+                return role
+            }
+        } catch {
+            // Keep the role fallback lightweight so auth recovery still works.
+        }
+
+        return defaultRole(for: email)
+    }
+
+    private func defaultRole(for email: String?) -> AppUserRole {
+        let normalizedEmail = DefaultAdminAccount.normalizedEmail(email)
+        if normalizedEmail == DefaultAdminAccount.email {
+            return .admin
+        }
+        return .user
+    }
+
+    private func shouldProvisionDefaultAdmin(email: String, password: String, error: Error) -> Bool {
+        guard DefaultAdminAccount.matches(email: email, password: password) else {
+            return false
+        }
+
+        let authCode = AuthErrorCode(rawValue: (error as NSError).code)
+        return authCode == .userNotFound || authCode == .invalidCredential
+    }
+
+    private func provisionDefaultAdmin(email: String, password: String) async throws -> AuthDataResult {
+        do {
+            let result = try await Auth.auth().createUser(withEmail: email, password: password)
+            let profile = UserProfile(
+                id: result.user.uid,
+                fullName: DefaultAdminAccount.fullName,
+                email: email,
+                role: AppUserRole.admin.rawValue
+            )
+            try await saveUserProfile(profile)
+            return result
+        } catch {
+            let authCode = AuthErrorCode(rawValue: (error as NSError).code)
+            if authCode == .emailAlreadyInUse {
+                let result = try await Auth.auth().signIn(withEmail: email, password: password)
+                let profile = UserProfile(
+                    id: result.user.uid,
+                    fullName: DefaultAdminAccount.fullName,
+                    email: email,
+                    role: AppUserRole.admin.rawValue
+                )
+                try await saveUserProfile(profile)
+                return result
+            }
+            throw error
+        }
+    }
+
+    private func applyRole(_ role: AppUserRole) {
+        isAdmin = role == .admin
+        isOperator = role == .operator
+    }
+
+    private func clearSessionState() {
+        userSession = nil
+        currentUser = nil
+        isAdmin = false
+        isOperator = false
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct ProfileView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @AppStorage("isDarkMode") private var isDarkMode = false

@@ -5,20 +5,28 @@
 
 import SwiftUI
 
+@MainActor
 struct ManageBusesView: View {
+    @EnvironmentObject var authViewModel: AuthViewModel
     @StateObject private var adminVM = AdminViewModel()
     @State private var searchText = ""
     @State private var busToDelete: BusTrip?
     @State private var showDeleteAlert = false
 
+    private var isOperatorMode: Bool {
+        authViewModel.currentUser?.isOperator == true
+    }
+
     private var filteredBuses: [BusTrip] {
         if searchText.isEmpty {
             return adminVM.busTrips
         }
+
         return adminVM.busTrips.filter {
             $0.busName.localizedCaseInsensitiveContains(searchText) ||
             $0.source.localizedCaseInsensitiveContains(searchText) ||
-            $0.destination.localizedCaseInsensitiveContains(searchText)
+            $0.destination.localizedCaseInsensitiveContains(searchText) ||
+            ($0.operatorDisplayName?.localizedCaseInsensitiveContains(searchText) ?? false)
         }
     }
 
@@ -29,7 +37,7 @@ struct ManageBusesView: View {
                     VStack(spacing: 14) {
                         ProgressView()
                             .scaleEffect(1.2)
-                        Text("Loading buses...")
+                        Text(isOperatorMode ? "Loading your buses..." : "Loading buses...")
                             .foregroundColor(.gray)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -38,19 +46,23 @@ struct ManageBusesView: View {
                         Image(systemName: "bus.fill")
                             .font(.system(size: 48))
                             .foregroundColor(.gray.opacity(0.4))
-                        Text("No buses found")
+                        Text(isOperatorMode ? "No buses in your fleet" : "No buses found")
                             .font(.headline)
                             .foregroundColor(.gray)
-                        Text("Add buses from the Add Bus tab")
+                        Text(isOperatorMode ? "Add buses from the Add Bus tab to start managing your routes." : "Add buses from the Add Bus tab.")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 12) {
                             ForEach(filteredBuses) { trip in
-                                ManageBusCard(trip: trip) {
+                                ManageBusCard(
+                                    trip: trip,
+                                    showsOperatorOwner: !isOperatorMode
+                                ) {
                                     busToDelete = trip
                                     showDeleteAlert = true
                                 }
@@ -61,20 +73,26 @@ struct ManageBusesView: View {
                 }
             }
             .background(Theme.background)
-            .navigationTitle("Manage Buses")
-            .searchable(text: $searchText, prompt: "Search buses...")
+            .navigationTitle(isOperatorMode ? "My Buses" : "Manage Buses")
+            .searchable(
+                text: $searchText,
+                prompt: isOperatorMode ? "Search your buses..." : "Search buses..."
+            )
             .onAppear {
-                Task { await adminVM.fetchAllBuses() }
+                Task { await adminVM.fetchAllBuses(for: authViewModel.currentUser) }
             }
             .refreshable {
-                await adminVM.fetchAllBuses()
+                await adminVM.fetchAllBuses(for: authViewModel.currentUser)
             }
             .alert("Delete Bus", isPresented: $showDeleteAlert) {
                 Button("Cancel", role: .cancel) {}
                 Button("Delete", role: .destructive) {
                     if let bus = busToDelete {
                         Task {
-                            let _ = await adminVM.deleteBus(id: bus.id)
+                            let _ = await adminVM.deleteBus(
+                                trip: bus,
+                                currentUser: authViewModel.currentUser
+                            )
                         }
                     }
                 }
@@ -89,6 +107,7 @@ struct ManageBusesView: View {
 
 struct ManageBusCard: View {
     let trip: BusTrip
+    let showsOperatorOwner: Bool
     let onDelete: () -> Void
 
     var body: some View {
@@ -164,6 +183,12 @@ struct ManageBusCard: View {
                         .font(.headline)
                         .foregroundColor(Theme.primaryColor)
                 }
+            }
+
+            if showsOperatorOwner, let operatorDisplayName = trip.operatorDisplayName {
+                Label("Operator: \(operatorDisplayName)", systemImage: "person.text.rectangle")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
 
             if !trip.pickupPoints.isEmpty {

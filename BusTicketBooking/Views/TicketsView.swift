@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct TicketsView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @StateObject private var bookingViewModel = BookingViewModel()

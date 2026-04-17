@@ -37,7 +37,7 @@ class BookingViewModel: ObservableObject {
             // Create booking record
             let bookingDate = Date()
             let normalizedTravelDate = Calendar.current.startOfDay(for: travelDate)
-            let bookingData: [String: Any] = [
+            var bookingData: [String: Any] = [
                 "userId": userId,
                 "busTripId": trip.id,
                 "seatIndices": seatIndices,
@@ -47,6 +47,18 @@ class BookingViewModel: ObservableObject {
                 "travelDate": normalizedTravelDate.timeIntervalSince1970,
                 "status": "confirmed"
             ]
+
+            if let operatorId = trip.operatorId {
+                bookingData["operatorId"] = operatorId
+            }
+
+            if let operatorEmail = trip.operatorEmail {
+                bookingData["operatorEmail"] = operatorEmail
+            }
+
+            if let operatorName = trip.operatorName {
+                bookingData["operatorName"] = operatorName
+            }
             
             // Use a batch write to ensure atomicity
             let batch = db.batch()

@@ -7,6 +7,47 @@
 
 import Foundation
 
+enum AppUserRole: String {
+    case user
+    case admin
+    case `operator`
+
+    var requiresEmailVerification: Bool {
+        self == .user
+    }
+
+    var displayName: String {
+        switch self {
+        case .user:
+            return "User"
+        case .admin:
+            return "Admin"
+        case .operator:
+            return "Bus Operator"
+        }
+    }
+}
+
+enum DefaultAdminAccount {
+    static let email = "admin@gmail.com"
+    static let password = "Admin123@"
+    static let fullName = "Default Admin"
+
+    static func normalizedEmail(_ email: String?) -> String {
+        email?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased() ?? ""
+    }
+
+    static func sanitizedPassword(_ password: String) -> String {
+        password.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    static func matches(email: String, password: String) -> Bool {
+        normalizedEmail(email) == self.email && sanitizedPassword(password) == self.password
+    }
+}
+
 struct NotificationPreferences {
     var emailNotifications: Bool
     var pushNotifications: Bool
@@ -63,5 +104,21 @@ struct UserProfile: Identifiable {
         self.notificationPreferences = notificationPreferences
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+
+    var appRole: AppUserRole {
+        AppUserRole(rawValue: role) ?? .user
+    }
+
+    var isAdmin: Bool {
+        appRole == .admin
+    }
+
+    var isOperator: Bool {
+        appRole == .operator
+    }
+
+    var isPrivileged: Bool {
+        isAdmin || isOperator
     }
 }

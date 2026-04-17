@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct HomeView: View {
 
     @State private var fromCity = ""

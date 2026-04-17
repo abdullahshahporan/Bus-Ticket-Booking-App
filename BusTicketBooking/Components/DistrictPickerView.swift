@@ -5,6 +5,7 @@
 
 import SwiftUI
 
+@MainActor
 struct DistrictPickerView: View {
     let title: String
     @Binding var selectedDistrict: String

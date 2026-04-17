@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isDefaultAdmin() {
+      return signedIn() && request.auth.token.email == "admin@gmail.com";
+    }
+
+    function hasRole(role) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function isAdmin() {
+      return isDefaultAdmin() || hasRole("admin");
+    }
+
+    function isOperator() {
+      return hasRole("operator");
+    }
+
+    function isOperatorTripOwner() {
+      return isOperator() && resource.data.operatorId == request.auth.uid;
+    }
+
+    function operatorOwnsTripId(tripId) {
+      return isOperator()
+        && exists(/databases/$(database)/documents/busTrips/$(tripId))
+        && get(/databases/$(database)/documents/busTrips/$(tripId)).data.operatorId == request.auth.uid;
+    }
+
+    match /users/{userId} {
+      allow read: if isSelf(userId) || isAdmin();
+
+      allow create: if isAdmin()
+        || (
+          isSelf(userId)
+          && request.resource.data.email == request.auth.token.email
+          && (
+            request.resource.data.role == "user"
+            || (isDefaultAdmin() && request.resource.data.role == "admin")
+          )
+        );
+
+      allow update: if isAdmin()
+        || (
+          isSelf(userId)
+          && request.resource.data.email == resource.data.email
+          && request.resource.data.role == resource.data.role
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    match /busTrips/{tripId} {
+      allow read: if signedIn();
+
+      allow create: if isAdmin()
+        || (
+          isOperator()
+          && request.resource.data.operatorId == request.auth.uid
+          && request.resource.data.operatorEmail == request.auth.token.email
+        );
+
+      allow update: if isAdmin()
+        || (
+          isOperatorTripOwner()
+          && request.resource.data.operatorId == resource.data.operatorId
+          && request.resource.data.operatorEmail == resource.data.operatorEmail
+        )
+        || (
+          signedIn()
+          && request.resource.data.diff(resource.data).changedKeys()
+            .hasOnly(["seatMatrix", "availableSeats", "updatedAt"])
+        );
+
+      allow delete: if isAdmin() || isOperatorTripOwner();
+    }
+
+    match /bookings/{bookingId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.userId == request.auth.uid)
+        || (isOperator() && resource.data.operatorId == request.auth.uid)
+        || operatorOwnsTripId(resource.data.busTripId);
+
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == "confirmed"
+        && request.resource.data.operatorId
+          == get(/databases/$(database)/documents/busTrips/$(request.resource.data.busTripId)).data.operatorId;
+
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && resource.data.userId == request.auth.uid
+          && request.resource.data.diff(resource.data).changedKeys().hasOnly(["status"])
+          && request.resource.data.status == "cancelled"
+        );
+
+      allow delete: if isAdmin();
+    }
+  }
+}

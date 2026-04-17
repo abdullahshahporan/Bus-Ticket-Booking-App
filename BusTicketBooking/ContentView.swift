@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct ContentView: View {
     @StateObject private var authViewModel = AuthViewModel()
     @AppStorage("isDarkMode") private var isDarkMode = false
@@ -19,9 +20,15 @@ struct ContentView: View {
                     .transition(.opacity)
             } else {
                 Group {
-                    if authViewModel.userSession != nil {
+                    if !authViewModel.hasResolvedSession {
+                        ProgressView("Checking session...")
+                            .tint(Theme.primaryColor)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else if authViewModel.userSession != nil {
                         if authViewModel.isAdmin {
                             AdminDashboardView()
+                        } else if authViewModel.isOperator {
+                            OperatorDashboardView()
                         } else {
                             MainTabView()
                         }

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct SoldTicketsView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @StateObject private var adminVM = AdminViewModel()
